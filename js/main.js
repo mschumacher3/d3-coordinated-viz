@@ -17,12 +17,11 @@ function setMap(){
         .attr("height", height);
 
 
-     //create Albers equal area conic projection centered on France
-    var projection = d3.geo.conicEqualArea()
-        .center([39.300299, -99.84375])
-        .parallels([43, 62])
-        .scale(100)
-        .translate([width / 2, height / 2]);
+    //create natural earth projection of world
+  var projection=d3.geo.naturalEarth()
+      .scale(2000)
+      .translate([width/2,height/2])
+   
 
 
     var path = d3.geo.path()
@@ -36,10 +35,10 @@ function setMap(){
         console.log("2");
 
     
-    function callback(error, csvData, us){
-        console.log("3");
+    function callback(error, csvData, state){
+        
 
-        //apply graticule with lines 5 units apart in both dimensions--lat,lon
+        //apply graticule with lines 10 units apart in both dimensions--lat,lon
         var graticule=d3.geo.graticule()
             .step([10,10]);
 
@@ -52,21 +51,22 @@ function setMap(){
         //add graticule lines
         var gratLines=map.selectAll(".gratLines")
             .data(graticule.lines())
-            .enter() //create an element for each datum
-            .append("path")//append each element to the svg as path element
-            .attr("class", "gratLines")//assign class equal to gratLines
+            .enter() 
+            .append("path")
+            .attr("class", "gratLines")
             .attr("d",path);
-            //translate the Counties to topojson
-        var usUSAStates = topojson.feature(us, us.objects.USAStates);
-            //adds out usUSAStates to the map
-        var state = map.selectAll(".state")
-            .data(usUSAStates)
+            //translate the states to topojson
+        var stateUSAStates = topojson.feature(state, state.objects.state);
+            //adds USAStates to the map
+        var selectStates=map.selectAll(".selectStates")
+            .data(stateUSAStates)
             .enter()
             .append("path")
-            .attr("d", function(d){
-                return "state " + d.properties.adm1_code;
-             })
-            .attr("d", path);
+            .attr("class", function(d){
+              return "selectStates " + d.properties.adm1_code;
+
+            })
+            .attr("d",path);//assign d with attribute path
     };
 };
 
