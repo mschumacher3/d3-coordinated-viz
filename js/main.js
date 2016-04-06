@@ -5,6 +5,24 @@
 var attrArray = ["Norm_Num_firms", "Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"]; //list of attributes
 var expressed = attrArray[0]; //initial attribute
 
+//global variables to assign colors to each variable
+var objectColors={
+      Norm_Num_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837'],
+      Norm_M_firms:['#c2e699','#78c679','#31a354','#006837'],
+      Norm_F_firms:['#005a32','#238443','#41ab5d','#78c679','#addd8e','#d9f0a3','#ffffcc'],
+      Norm_MI_firms:['#005a32','#238443','#41ab5d','#78c679','#addd8e','#d9f0a3','#ffffcc'],
+      Norm_NonMI_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837']};
+
+//assigns chart titles to each variable
+var chartTitles={
+      Norm_Num_firms:['Total Number of Firms'],
+      Norm_M_firms:['Number of Firms Owned by Men'],
+      Norm_F_firms:['Number of Firms Owned by Women'],
+      Norm_MI_firms:['Number of Firms Owned by Minorities'],
+      Norm_NonMI_firms:['Number of Firms not Owned by Minorities']};
+
+
+
 //begins script when window loads
 window.onload = setMap();
 
@@ -41,11 +59,11 @@ function setMap(){
         .defer(d3.json, "data/USAStates.topojson") 
         .await(callback);
 
-    function callback(error, csvData, us){
+    function callback(error, StateData, us){
         //translates the states topojson
         var usStates = topojson.feature(us, us.objects.USAStatesOnly);
         // console.log(usStates);
-       //joinData(map, path);
+        joinData(map, path);
 
         //var colorScale = makeColorScale(csvData);
         // setEnumerationUnits(usStates, map, path, colorScale);
@@ -61,16 +79,16 @@ function setMap(){
 
 
 //writing a function to join the data from the csv and geojson
-function joinData (usStates, csvData){
+function joinData (usStates, StateData){
     console.log("jaha");
 
       //loops through csv to assign each set of csv attribute values to geojson
-      for (var i= 0; i<csvData.length; i++){
-      var csvRegion = csvData[i];
-      var csvKey = csvRegion.Name;
+      for (var i= 0; i<StateData.length; i++){
+          var csvRegion = StateData[i];
+          var csvKey = csvRegion.name;
 
         //loops through geojson regions to find correct region
-        for (var a=0; a<worldcountries.length; a++){
+        for (var a=0; a<usStates.length; a++){
           var geojsonProps = usStates[a].properties;
           var geojsonKey = geojsonProps.name;
 
@@ -86,137 +104,162 @@ function joinData (usStates, csvData){
     return usStates;
 };
 
-// function setEnumerationUnits(usStates, map, path, colorScale){    
-//   var states = map.selectAll(".states")
-//           .data(usStates)
-//           .enter()
-//           .append("path")
-//           .attr("class", function(d){
-//             return "states " + d.properties.name;
+function setEnumerationUnits(usStates, map, path, colorScale){    
+  var states = map.selectAll(".states")
+          .data(usStates)
+          .enter()
+          .append("path")
+          .attr("class", function(d){
+            return "states " + d.properties.name;
 
-//           })
+          })
 
-//           .attr("d",path)
-//         .style("fill", function(d){
-//             return choropleth(d.properties, colorScale);
-//         });
-// };
+          .attr("d",path)
+        .style("fill", function(d){
+            return choropleth(d.properties, colorScale);
+        });
+};
 
-// function choropleth(props, colorScale){
-//     //make sure attribute value is a number
-//     var val = parseFloat(props[expressed]);
-//     //if attribute value exists, assign a color; otherwise assign gray
-//     if (val && val != NaN){
-//         return colorScale(val);
-//     } else {
-//         return "#CCC";
-//     };
-// };
+function choropleth(props, colorScale){
+    //make sure attribute value is a number
+    var val = parseFloat(props[expressed]);
+    //if attribute value exists, assign a color; otherwise assign gray
+    if (val && val != NaN){
+        return colorScale(val);
+    } else {
+        return "#CCC";
+    };
+};
 
-// //function to create color scale generator
-// function makeColorScale(data){
-//     var colorClasses = [
-//         "#D4B9DA",
-//         "#C994C7",
-//         "#DF65B0",
-//         "#DD1C77",
-//         "#980043"
-//     ];
+//function to create color scale generator
+function makeColorScale(data){
+    var colorClasses = [
+        "#D4B9DA",
+        "#C994C7",
+        "#DF65B0",
+        "#DD1C77",
+        "#980043"
+    ];
 
-//     //create color scale generator
-//     var colorScale = d3.scale.quantile()
-//         .range(colorClasses);
-//      //build array of all values of the expressed attribute
-//     var domainArray = [];
-//     for (var i=0; i<data.length; i++){
-//         var val = parseFloat(data[i][expressed]);
-//         domainArray.push(val);
-//     };
+    //create color scale generator
+    var colorScale = d3.scale.quantile()
+        .range(colorClasses);
+     //build array of all values of the expressed attribute
+    var domainArray = [];
+    for (var i=0; i<data.length; i++){
+        var val = parseFloat(data[i][expressed]);
+        domainArray.push(val);
+    };
 
-//     //cluster data using ckmeans clustering algorithm to create natural breaks
-//     var clusters = ss.ckmeans(domainArray, 5);
-//     //reset domain array to cluster minimums
-//     domainArray = clusters.map(function(d){
-//         return d3.min(d);
-//     });
-//     //remove first value from domain array to create class breakpoints
-//     domainArray.shift();
+    //cluster data using ckmeans clustering algorithm to create natural breaks
+    var clusters = ss.ckmeans(domainArray, 5);
+    //reset domain array to cluster minimums
+    domainArray = clusters.map(function(d){
+        return d3.min(d);
+    });
+    //remove first value from domain array to create class breakpoints
+    domainArray.shift();
 
-//     //  //build two-value array of minimum and maximum expressed attribute values
-//     // var minmax = [
-//     //     d3.min(data, function(d) { return parseFloat(d[expressed]); }),
-//     //     d3.max(data, function(d) { return parseFloat(d[expressed]); })
-//     //     ];
+    //  //build two-value array of minimum and maximum expressed attribute values
+    // var minmax = [
+    //     d3.min(data, function(d) { return parseFloat(d[expressed]); }),
+    //     d3.max(data, function(d) { return parseFloat(d[expressed]); })
+    //     ];
 
-//     //assign array of expressed values as scale domain
-//     colorScale.domain(domainArray);
-//     return colorScale;
+    //assign array of expressed values as scale domain
+    colorScale.domain(domainArray);
+    return colorScale;
 
-// };
+};
 
 
-// //function to create coordinated bar chart
-// function setChart(csvData, colorScale){
-//     //chart frame dimensions
-//     var chartWidth = window.innerWidth * 0.425,
-//         chartHeight = 460;
+//function to create coordinated bar chart
+function setChart(StateData, colorScale){
+    //chart frame dimensions
+    var chartWidth = window.innerWidth * 0.425,
+        chartHeight = 460;
 
-//     //create a second svg element to hold the bar chart
-//     var chart = d3.select("body")
-//         .append("svg")
-//         .attr("width", chartWidth)
-//         .attr("height", chartHeight)
-//         .attr("class", "chart");
+    //create a second svg element to hold the bar chart
+    var chart = d3.select("body")
+        .append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .attr("class", "chart");
 
-//     var yScale = d3.scale.linear()
-//         .range([0, chartHeight])
-//         .domain([0, 105]);
-//     //set bars for each province
-//        var bars = chart.selectAll(".bars")
-//         .data(csvData)
-//         .enter()
-//         .append("rect")
-//         .sort(function(a, b){
-//             return a[expressed]-b[expressed]
-//         })
-//         .attr("class", function(d){
-//             return "bars " + d.adm0_a3;
-//         })
-//         .attr("width", chartWidth / csvData.length - 1)
-//         .attr("x", function(d, i){
-//             return i * (chartWidth / csvData.length);
-//         })
-//         .attr("height", function(d){
-//             return yScale(parseFloat(d[expressed]));
-//         })
-//         .attr("y", function(d){
-//             return chartHeight - yScale(parseFloat(d[expressed]));
-//         })
-//         .style("fill", function(d){
-//             return choropleth(d, colorScale);
-//         });
+    var yScale = d3.scale.linear()
+        .range([0, chartHeight])
+        .domain([0, 105]);
+    //set bars for each province
+       var bars = chart.selectAll(".bars")
+        .data(StateData)
+        .enter()
+        .append("rect")
+        .sort(function(a, b){
+            return a[expressed]-b[expressed]
+        })
+        .attr("class", function(d){
+            return "bars " + d.adm0_a3;
+        })
+        .attr("width", chartWidth / StateData.length - 1)
+        .attr("x", function(d, i){
+            return i * (chartWidth / StateData.length);
+        })
+        .attr("height", function(d){
+            return yScale(parseFloat(d[expressed]));
+        })
+        .attr("y", function(d){
+            return chartHeight - yScale(parseFloat(d[expressed]));
+        })
+        .style("fill", function(d){
+            return choropleth(d, colorScale);
+        });
 
-//      var numbers = chart.selectAll(".numbers")
-//         .data(csvData)
-//         .enter()
-//         .append("text")
-//         .sort(function(a, b){
-//             return a[expressed]-b[expressed]
-//         })
-//         .attr("class", function(d){
-//             return "numbers " + d.adm1_code;
-//         })
-//         .attr("text-anchor", "middle")
-//         .attr("x", function(d, i){
-//             var fraction = chartWidth / csvData.length;
-//             return i * fraction + (fraction - 1) / 2;
-//         })
-//         .attr("y", function(d){
-//             return chartHeight - yScale(parseFloat(d[expressed])) + 15;
-//         })
-//         .text(function(d){
-//             return d[expressed];
-//         })
+             //create a text element for the chart title
+        var chartTitle = chart.append("text")
+            .attr("x", 40)
+            .attr("y", 40)
+            .attr("class", "chartTitle")
+            .text("Number of " + expressed[3] + " ");
+
+        //create vertical axis generator
+        var yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient("left");
+
+        //place axis
+        var axis = chart.append("g")
+            .attr("class", "axis")
+            .attr("transform", translate)
+            .call(yAxis);
+
+    //create frame for chart border
+    var chartFrame = chart.append("rect")
+        .attr("class", "chartFrame")
+        .attr("width", chartInnerWidth)
+        .attr("height", chartInnerHeight)
+        .attr("transform", translate);
+
+     var numbers = chart.selectAll(".numbers")
+        .data(StateData)
+        .enter()
+        .append("text")
+        .sort(function(a, b){
+            return a[expressed]-b[expressed]
+        })
+        .attr("class", function(d){
+            return "numbers " + d.adm1_code;
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function(d, i){
+            var fraction = chartWidth / StateData.length;
+            return i * fraction + (fraction - 1) / 2;
+        })
+        .attr("y", function(d){
+            return chartHeight - yScale(parseFloat(d[expressed])) + 15;
+        })
+        .text(function(d){
+            return d[expressed];
+        })
 })();
 
 
