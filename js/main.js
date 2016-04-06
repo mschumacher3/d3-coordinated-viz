@@ -5,6 +5,7 @@
 var attrArray = ["Norm_Num_firms", "Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"]; //list of attributes
 var expressed = attrArray[0]; //initial attribute
 
+//thought this may be easier... doesn't seem like it 
 //global variables to assign colors to each variable
 var objectColors={
       Norm_Num_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837'],
@@ -62,12 +63,12 @@ function setMap(){
     function callback(error, csvData, us){
         //translates the states topojson
         var usStates = topojson.feature(us, us.objects.USAStatesOnly);
-        // console.log(usStates);
+        console.log(usStates);
         usStates = joinData(usStates, csvData);
 
-        //var colorScale = makeColorScale(csvData);
-        // setEnumerationUnits(usStates, map, path, colorScale);
-        //setChart(csvData, colorScale);
+        var colorScale = makeColorScale(csvData);
+        setEnumerationUnits(usStates, map, path, colorScale);
+        setChart(csvData, colorScale);
 
         //add out usStates to the map
         var states = map.append("path")
@@ -92,7 +93,7 @@ function joinData (usStates, csvData){
         //loops through geojson regions to find correct region
         for (var a=0; a<usStates.length; a++){
           var geojsonProps = usStates[a].properties;
-          var geojsonKey = geojsonProps.name;
+          var geojsonKey = geojsonProps.name;;
 
 
           if (geojsonKey==csvKey){
@@ -106,7 +107,8 @@ function joinData (usStates, csvData){
     return usStates;
 };
 
-function setEnumerationUnits(usStates, map, path, colorScale){    
+function setEnumerationUnits(usStates, map, path, colorScale){
+   console.log("haha 2");    
   var states = map.selectAll(".states")
           .data(usStates)
           .enter()
@@ -135,6 +137,7 @@ function choropleth(props, colorScale){
 
 //function to create color scale generator
 function makeColorScale(data){
+    console.log("haha");
     var colorClasses = [
         "#D4B9DA",
         "#C994C7",
@@ -153,7 +156,7 @@ function makeColorScale(data){
         domainArray.push(val);
     };
 
-    //cluster data using ckmeans clustering algorithm to create natural breaks
+ //cluster data using ckmeans clustering algorithm to create natural breaks
     var clusters = ss.ckmeans(domainArray, 5);
     //reset domain array to cluster minimums
     domainArray = clusters.map(function(d){
@@ -175,94 +178,94 @@ function makeColorScale(data){
 };
 
 
-//function to create coordinated bar chart
-function setChart(StateData, colorScale){
-    //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.425,
-        chartHeight = 460;
+// //function to create coordinated bar chart
+// function setChart(StateData, colorScale){
+//     //chart frame dimensions
+//     var chartWidth = window.innerWidth * 0.425,
+//         chartHeight = 460;
 
-    //create a second svg element to hold the bar chart
-    var chart = d3.select("body")
-        .append("svg")
-        .attr("width", chartWidth)
-        .attr("height", chartHeight)
-        .attr("class", "chart");
+//     //create a second svg element to hold the bar chart
+//     var chart = d3.select("body")
+//         .append("svg")
+//         .attr("width", chartWidth)
+//         .attr("height", chartHeight)
+//         .attr("class", "chart");
 
-    var yScale = d3.scale.linear()
-        .range([0, chartHeight])
-        .domain([0, 105]);
-    //set bars for each province
-       var bars = chart.selectAll(".bars")
-        .data(StateData)
-        .enter()
-        .append("rect")
-        .sort(function(a, b){
-            return a[expressed]-b[expressed]
-        })
-        .attr("class", function(d){
-            return "bars " + d.adm0_a3;
-        })
-        .attr("width", chartWidth / StateData.length - 1)
-        .attr("x", function(d, i){
-            return i * (chartWidth / StateData.length);
-        })
-        .attr("height", function(d){
-            return yScale(parseFloat(d[expressed]));
-        })
-        .attr("y", function(d){
-            return chartHeight - yScale(parseFloat(d[expressed]));
-        })
-        .style("fill", function(d){
-            return choropleth(d, colorScale);
-        });
+//     var yScale = d3.scale.linear()
+//         .range([0, chartHeight])
+//         .domain([0, 105]);
+//     //set bars for each province
+//        var bars = chart.selectAll(".bars")
+//         .data(StateData)
+//         .enter()
+//         .append("rect")
+//         .sort(function(a, b){
+//             return a[expressed]-b[expressed]
+//         })
+//         .attr("class", function(d){
+//             return "bars " + d.adm0_a3;
+//         })
+//         .attr("width", chartWidth / StateData.length - 1)
+//         .attr("x", function(d, i){
+//             return i * (chartWidth / StateData.length);
+//         })
+//         .attr("height", function(d){
+//             return yScale(parseFloat(d[expressed]));
+//         })
+//         .attr("y", function(d){
+//             return chartHeight - yScale(parseFloat(d[expressed]));
+//         })
+//         .style("fill", function(d){
+//             return choropleth(d, colorScale);
+//         });
 
-             //create a text element for the chart title
-        var chartTitle = chart.append("text")
-            .attr("x", 40)
-            .attr("y", 40)
-            .attr("class", "chartTitle")
-            .text("Number of " + expressed[3] + " ");
+//              //create a text element for the chart title
+//         var chartTitle = chart.append("text")
+//             .attr("x", 40)
+//             .attr("y", 40)
+//             .attr("class", "chartTitle")
+//             .text("Number of " + expressed[3] + " ");
 
-        //create vertical axis generator
-        var yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient("left");
+//         //create vertical axis generator
+//         var yAxis = d3.svg.axis()
+//             .scale(yScale)
+//             .orient("left");
 
-        //place axis
-        var axis = chart.append("g")
-            .attr("class", "axis")
-            .attr("transform", translate)
-            .call(yAxis);
+//         //place axis
+//         var axis = chart.append("g")
+//             .attr("class", "axis")
+//             .attr("transform", translate)
+//             .call(yAxis);
 
-        //create frame for chart border
-        var chartFrame = chart.append("rect")
-            .attr("class", "chartFrame")
-            .attr("width", chartInnerWidth)
-            .attr("height", chartInnerHeight)
-            .attr("transform", translate);
+//         //create frame for chart border
+//         var chartFrame = chart.append("rect")
+//             .attr("class", "chartFrame")
+//             .attr("width", chartInnerWidth)
+//             .attr("height", chartInnerHeight)
+//             .attr("transform", translate);
 
-         var numbers = chart.selectAll(".numbers")
-            .data(StateData)
-            .enter()
-            .append("text")
-            .sort(function(a, b){
-                return a[expressed]-b[expressed]
-            })
-            .attr("class", function(d){
-                return "numbers " + d.adm1_code;
-            })
-            .attr("text-anchor", "middle")
-            .attr("x", function(d, i){
-                var fraction = chartWidth / StateData.length;
-                return i * fraction + (fraction - 1) / 2;
-            })
-            .attr("y", function(d){
-                return chartHeight - yScale(parseFloat(d[expressed])) + 15;
-            })
-            .text(function(d){
-                return d[expressed];
-            })
-        };
+//          var numbers = chart.selectAll(".numbers")
+//             .data(StateData)
+//             .enter()
+//             .append("text")
+//             .sort(function(a, b){
+//                 return a[expressed]-b[expressed]
+//             })
+//             .attr("class", function(d){
+//                 return "numbers " + d.adm1_code;
+//             })
+//             .attr("text-anchor", "middle")
+//             .attr("x", function(d, i){
+//                 var fraction = chartWidth / StateData.length;
+//                 return i * fraction + (fraction - 1) / 2;
+//             })
+//             .attr("y", function(d){
+//                 return chartHeight - yScale(parseFloat(d[expressed])) + 15;
+//             })
+//             .text(function(d){
+//                 return d[expressed];
+//             })
+//         };
 })();
 
 
