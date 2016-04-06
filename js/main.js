@@ -59,11 +59,11 @@ function setMap(){
         .defer(d3.json, "data/USAStates.topojson") 
         .await(callback);
 
-    function callback(error, StateData, us){
+    function callback(error, csvData, us){
         //translates the states topojson
         var usStates = topojson.feature(us, us.objects.USAStatesOnly);
         // console.log(usStates);
-        joinData(map, path);
+        usStates = joinData(usStates, csvData);
 
         //var colorScale = makeColorScale(csvData);
         // setEnumerationUnits(usStates, map, path, colorScale);
@@ -79,13 +79,15 @@ function setMap(){
 
 
 //writing a function to join the data from the csv and geojson
-function joinData (usStates, StateData){
-    console.log("jaha");
+function joinData (usStates, csvData){
+    console.log(csvData);
 
       //loops through csv to assign each set of csv attribute values to geojson
-      for (var i= 0; i<StateData.length; i++){
-          var csvRegion = StateData[i];
+      for (var i= 0; i<csvData.length; i++){
+
+          var csvRegion = csvData[i];
           var csvKey = csvRegion.name;
+
 
         //loops through geojson regions to find correct region
         for (var a=0; a<usStates.length; a++){
@@ -232,34 +234,35 @@ function setChart(StateData, colorScale){
             .attr("transform", translate)
             .call(yAxis);
 
-    //create frame for chart border
-    var chartFrame = chart.append("rect")
-        .attr("class", "chartFrame")
-        .attr("width", chartInnerWidth)
-        .attr("height", chartInnerHeight)
-        .attr("transform", translate);
+        //create frame for chart border
+        var chartFrame = chart.append("rect")
+            .attr("class", "chartFrame")
+            .attr("width", chartInnerWidth)
+            .attr("height", chartInnerHeight)
+            .attr("transform", translate);
 
-     var numbers = chart.selectAll(".numbers")
-        .data(StateData)
-        .enter()
-        .append("text")
-        .sort(function(a, b){
-            return a[expressed]-b[expressed]
-        })
-        .attr("class", function(d){
-            return "numbers " + d.adm1_code;
-        })
-        .attr("text-anchor", "middle")
-        .attr("x", function(d, i){
-            var fraction = chartWidth / StateData.length;
-            return i * fraction + (fraction - 1) / 2;
-        })
-        .attr("y", function(d){
-            return chartHeight - yScale(parseFloat(d[expressed])) + 15;
-        })
-        .text(function(d){
-            return d[expressed];
-        })
+         var numbers = chart.selectAll(".numbers")
+            .data(StateData)
+            .enter()
+            .append("text")
+            .sort(function(a, b){
+                return a[expressed]-b[expressed]
+            })
+            .attr("class", function(d){
+                return "numbers " + d.adm1_code;
+            })
+            .attr("text-anchor", "middle")
+            .attr("x", function(d, i){
+                var fraction = chartWidth / StateData.length;
+                return i * fraction + (fraction - 1) / 2;
+            })
+            .attr("y", function(d){
+                return chartHeight - yScale(parseFloat(d[expressed])) + 15;
+            })
+            .text(function(d){
+                return d[expressed];
+            })
+        };
 })();
 
 
