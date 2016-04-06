@@ -41,12 +41,8 @@ function setMap(){
         .attr("height", height);
 
     //creates Albers equal area conic projection for the United States
-    //Still need to figure out how to get Hawaii and Alaska on here...
-    var projection = d3.geo.albers()
-        .rotate([96, 0])
-        .center([-.6, 38.7])
-        .parallels([29.5, 45.5])
-        .scale(1070)
+    var projection = d3.geo.albersUsa()
+        .scale(1000)
         .translate([width / 2, height / 2])
 
     var path = d3.geo.path()
@@ -57,18 +53,18 @@ function setMap(){
         //loads attributes from csv
         .defer(d3.csv, "data/StateData.csv") 
         //loads choropleth spatial data
-        .defer(d3.json, "data/USAStates.topojson") 
+        .defer(d3.json, "data/usaStates.topojson") 
         .await(callback);
 
     function callback(error, csvData, us){
         //translates the states topojson
-        var usStates = topojson.feature(us, us.objects.USAStatesOnly);
+        var usStates = topojson.feature(us, us.objects.USAStates);
         console.log(usStates);
         usStates = joinData(usStates, csvData);
 
-        var colorScale = makeColorScale(csvData);
-        setEnumerationUnits(usStates, map, path, colorScale);
-        setChart(csvData, colorScale);
+        // var colorScale = makeColorScale(csvData);
+        // setEnumerationUnits(usStates, map, path, colorScale);
+        // setChart(csvData, colorScale);
 
         //add out usStates to the map
         var states = map.append("path")
@@ -87,13 +83,13 @@ function joinData (usStates, csvData){
       for (var i= 0; i<csvData.length; i++){
 
           var csvRegion = csvData[i];
-          var csvKey = csvRegion.name;
+          var csvKey = csvRegion.admin_03a;
 
 
         //loops through geojson regions to find correct region
         for (var a=0; a<usStates.length; a++){
           var geojsonProps = usStates[a].properties;
-          var geojsonKey = geojsonProps.name;;
+          var geojsonKey = geojsonProps.admin_03a;
 
 
           if (geojsonKey==csvKey){
