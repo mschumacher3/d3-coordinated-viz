@@ -62,7 +62,7 @@ function setMap(){
         console.log(usStates);
         usStates = joinData(usStates, csvData);
 
-        //var colorScale = makeColorScale(csvData);
+        var colorScale = makeColorScale(csvData);
         setEnumerationUnits(usStates, map, path);
         // setChart(csvData, colorScale);
 
@@ -118,9 +118,8 @@ function setEnumerationUnits(usStates, map, path, colorScale){
         .style("fill", function(d){
             return choropleth(d.properties, colorScale);
         });
-};
 
-function choropleth(props, colorScale){
+  function choropleth(props, colorScale){
     //make sure attribute value is a number
     var val = parseFloat(props[expressed]);
     //if attribute value exists, assign a color; otherwise assign gray
@@ -129,7 +128,10 @@ function choropleth(props, colorScale){
     } else {
         return "#CCC";
     };
+  };
 };
+
+
 
 //function to create color scale generator
 function makeColorScale(data){
@@ -166,10 +168,12 @@ function makeColorScale(data){
         d3.min(data, function(d) { return parseFloat(d[expressed]); }),
         d3.max(data, function(d) { return parseFloat(d[expressed]); })
         ];
+        console.log(colorScale.quantiles())
 
     //assign array of expressed values as scale domain
     colorScale.domain(minmax);
     return colorScale;
+
 
 };
 
