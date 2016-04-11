@@ -7,12 +7,12 @@ var expressed = attrArray[0]; //initial attribute
 
 //thought this may be easier... doesn't seem like it 
 //global variables to assign colors to each variable
-var objectColors={
-      Norm_Num_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837'],
-      Norm_M_firms:['#c2e699','#78c679','#31a354','#006837'],
-      Norm_F_firms:['#005a32','#238443','#41ab5d','#78c679','#addd8e','#d9f0a3','#ffffcc'],
-      Norm_MI_firms:['#005a32','#238443','#41ab5d','#78c679','#addd8e','#d9f0a3','#ffffcc'],
-      Norm_NonMI_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837']};
+// var objectColors={
+//       Norm_Num_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837'],
+//       Norm_M_firms:['#c2e699','#78c679','#31a354','#006837'],
+//       Norm_F_firms:['#005a32','#238443','#41ab5d','#78c679','#addd8e','#d9f0a3','#ffffcc'],
+//       Norm_MI_firms:['#005a32','#238443','#41ab5d','#78c679','#addd8e','#d9f0a3','#ffffcc'],
+//       Norm_NonMI_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837']};
 
 //assigns chart titles to each variable
 var chartTitles={
@@ -62,8 +62,8 @@ function setMap(){
         console.log(usStates);
         usStates = joinData(usStates, csvData);
 
-        // var colorScale = makeColorScale(csvData);
-        // setEnumerationUnits(usStates, map, path, colorScale);
+        //var colorScale = makeColorScale(csvData);
+        setEnumerationUnits(usStates, map, path);
         // setChart(csvData, colorScale);
 
         //add out usStates to the map
@@ -83,13 +83,13 @@ function joinData (usStates, csvData){
       for (var i= 0; i<csvData.length; i++){
 
           var csvRegion = csvData[i];
-          var csvKey = csvRegion.admin_03a;
+          var csvKey = csvRegion.adm1_code;
 
 
         //loops through geojson regions to find correct region
         for (var a=0; a<usStates.length; a++){
           var geojsonProps = usStates[a].properties;
-          var geojsonKey = geojsonProps.admin_03a;
+          var geojsonKey = geojsonProps.adm1_code;
 
 
           if (geojsonKey==csvKey){
@@ -110,7 +110,7 @@ function setEnumerationUnits(usStates, map, path, colorScale){
           .enter()
           .append("path")
           .attr("class", function(d){
-            return "states " + d.properties.name;
+            return "states " + d.properties.adm1_code;
 
           })
 
@@ -145,30 +145,30 @@ function makeColorScale(data){
     //create color scale generator
     var colorScale = d3.scale.quantile()
         .range(colorClasses);
-     //build array of all values of the expressed attribute
-    var domainArray = [];
-    for (var i=0; i<data.length; i++){
-        var val = parseFloat(data[i][expressed]);
-        domainArray.push(val);
-    };
+ //     //build array of all values of the expressed attribute
+ //    var domainArray = [];
+ //    for (var i=0; i<data.length; i++){
+ //        var val = parseFloat(data[i][expressed]);
+ //        domainArray.push(val);
+ //    };
 
- //cluster data using ckmeans clustering algorithm to create natural breaks
-    var clusters = ss.ckmeans(domainArray, 5);
-    //reset domain array to cluster minimums
-    domainArray = clusters.map(function(d){
-        return d3.min(d);
-    });
+ // //cluster data using ckmeans clustering algorithm to create natural breaks
+ //    var clusters = ss.ckmeans(domainArray, 5);
+ //    //reset domain array to cluster minimums
+ //    domainArray = clusters.map(function(d){
+ //        return d3.min(d);
+ //    });
     //remove first value from domain array to create class breakpoints
-    domainArray.shift();
+    //domainArray.shift();
 
-    //  //build two-value array of minimum and maximum expressed attribute values
-    // var minmax = [
-    //     d3.min(data, function(d) { return parseFloat(d[expressed]); }),
-    //     d3.max(data, function(d) { return parseFloat(d[expressed]); })
-    //     ];
+     //build two-value array of minimum and maximum expressed attribute values
+    var minmax = [
+        d3.min(data, function(d) { return parseFloat(d[expressed]); }),
+        d3.max(data, function(d) { return parseFloat(d[expressed]); })
+        ];
 
     //assign array of expressed values as scale domain
-    colorScale.domain(domainArray);
+    colorScale.domain(minmax);
     return colorScale;
 
 };
