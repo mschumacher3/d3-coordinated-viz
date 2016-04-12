@@ -1,17 +1,31 @@
-.contnet{
+#description{
     padding: 10px;
     text-align: center;
-    background-color: #black;
+    background-color: #fedebc;
 }
 h1{
-    font-family: "Lucida Grande";
-    font-size: 24px;
-    color: #black;
+    font-family: "Lucida Fax";
+    font-size: 32px;
+    color: black;
 }
 h2{
-    font-family: "Lucida Grande";
+    font-family: "Lucida Fax";
+    font-size: 19px;
+    color: black;
+}
+h3{
+    font-family: "Lucida Fax";
     font-size: 18px;
-    color: #black;
+    color: black;
+}
+h4{
+    font-family: "Lucida Fax";
+    font-size: 14px;
+    color: black;
+}
+#content{
+    padding: 50px;
+    color: black;
 }
 .states {
 	fill: #d2d7dc;
@@ -20,7 +34,7 @@ h2{
 }
 .map{
 	position: absolute;
-	border: medium solid #999;
+	border: medium solid #ba5f02;
 	padding: 20px;
 
 }
