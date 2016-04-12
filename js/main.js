@@ -14,13 +14,13 @@
   //       Norm_MI_firms:['#005a32','#238443','#41ab5d','#78c679','#addd8e','#d9f0a3','#ffffcc'],
   //       Norm_NonMI_firms:['#ffffcc','#c2e699','#78c679','#31a354','#006837']};
 
-  // //assigns chart titles to each variable
-  // var chartTitles={
-  //       Norm_Num_firms:['Total Number of Firms'],
-  //       Norm_M_firms:['Number of Firms Owned by Men'],
-  //       Norm_F_firms:['Number of Firms Owned by Women'],
-  //       Norm_MI_firms:['Number of Firms Owned by Minorities'],
-  //       Norm_NonMI_firms:['Number of Firms not Owned by Minorities']};
+  //assigns chart titles to each variable
+  var chartTitles={
+      Norm_Num_firms:['Total Number of Firms'],
+      Norm_M_firms:['Number of Firms Owned by Men'],
+      Norm_F_firms:['Number of Firms Owned by Women'],
+      Norm_MI_firms:['Number of Firms Owned by Minorities'],
+      Norm_NonMI_firms:['Number of Firms not Owned by Minorities']};
 
   //chart frame dimensions
   var chartWidth = window.innerWidth * 0.425,
@@ -134,20 +134,6 @@
     .text('{"stroke": "#000", "stroke-width": "0.5px"}');
   };
 
-  //   function choropleth(props, colorScale){
-  //     //make sure attribute value is a number
-  //     var val = parseFloat(props[expressed]);
-  //     //if attribute value exists, assign a color; otherwise assign gray
-  //     if (val && val != NaN){
-  //         return colorScale(val);
-  //     } else {
-  //         return "#CCC";
-  //     };
-  //   };
-  // };
-
-
-
   //function to create color scale generator
   function makeColorScale(data){
     var colorClasses = [
@@ -161,125 +147,107 @@
       //create color scale generator
       var colorScale = d3.scale.quantile()
           .range(colorClasses);
-   //     //build array of all values of the expressed attribute
-   //    var domainArray = [];
-   //    for (var i=0; i<data.length; i++){
-   //        var val = parseFloat(data[i][expressed]);
-   //        domainArray.push(val);
-   //    };
+      //build array of all values of the expressed attribute
+      var domainArray = [];
+      for (var i=0; i<data.length; i++){
+          var val = parseFloat(data[i][expressed]);
+          domainArray.push(val);
+      };
 
-   // //cluster data using ckmeans clustering algorithm to create natural breaks
-   //    var clusters = ss.ckmeans(domainArray, 5);
-   //    //reset domain array to cluster minimums
-   //    domainArray = clusters.map(function(d){
-   //        return d3.min(d);
-   //    });
+      //cluster data using ckmeans clustering algorithm to create natural breaks
+      var clusters = ss.ckmeans(domainArray, 5);
+      //reset domain array to cluster minimums
+      domainArray = clusters.map(function(d){
+          return d3.min(d);
+      });
       //remove first value from domain array to create class breakpoints
-      //domainArray.shift();
-
-       //build two-value array of minimum and maximum expressed attribute values
-      var minmax = [
-          d3.min(data, function(d) { return parseFloat(d[expressed]); }),
-          d3.max(data, function(d) { return parseFloat(d[expressed]); })
-          ];
-          console.log(colorScale.quantiles())
-
+      domainArray.shift();
       //assign array of expressed values as scale domain
-      colorScale.domain(minmax);
+      colorScale.domain(domainArray);
       return colorScale;
+  };
 
-
+  function choropleth(props, colorScale){
+    //make sure attribute value is a number
+    var val = parseFloat(props[expressed]);
+    //if attribute value exists, assign a color; otherwise assign gray
+    if (val && val != NaN){
+      return colorScale(val);
+    } else {
+      return "#CCC";
+    };
   };
 
 
-  // //function to create coordinated bar chart
-  // function setChart(StateData, colorScale){
-  //     //chart frame dimensions
-  //     var chartWidth = window.innerWidth * 0.425,
-  //         chartHeight = 460;
+//function to create coordinated bar chart
+function setChart(StateData, colorScale){
+  //chart frame dimensions
+  // var chartWidth = window.innerWidth * 0.425,
+  //   chartHeight = 460;
 
-  //     //create a second svg element to hold the bar chart
-  //     var chart = d3.select("body")
-  //         .append("svg")
-  //         .attr("width", chartWidth)
-  //         .attr("height", chartHeight)
-  //         .attr("class", "chart");
+  //create a second svg element to hold the bar chart
+  var chart = d3.select("body")
+    .append("svg")
+    .attr("width", chartWidth)
+    .attr("height", chartHeight)
+    .attr("class", "chart");
 
-  //     var yScale = d3.scale.linear()
-  //         .range([0, chartHeight])
-  //         .domain([0, 105]);
-  //     //set bars for each province
-  //        var bars = chart.selectAll(".bars")
-  //         .data(StateData)
-  //         .enter()
-  //         .append("rect")
-  //         .sort(function(a, b){
-  //             return a[expressed]-b[expressed]
-  //         })
-  //         .attr("class", function(d){
-  //             return "bars " + d.adm0_a3;
-  //         })
-  //         .attr("width", chartWidth / StateData.length - 1)
-  //         .attr("x", function(d, i){
-  //             return i * (chartWidth / StateData.length);
-  //         })
-  //         .attr("height", function(d){
-  //             return yScale(parseFloat(d[expressed]));
-  //         })
-  //         .attr("y", function(d){
-  //             return chartHeight - yScale(parseFloat(d[expressed]));
-  //         })
-  //         .style("fill", function(d){
-  //             return choropleth(d, colorScale);
-  //         });
+  //create a rectangle for chart background fill
+  var chartBackground = chart.append("rect")
+    .attr("class", "chartBackground")
+    .attr("width", chartInnerWidth)
+    .attr("height", chartInnerHeight)
+    .attr("transform", translate);
 
-  //              //create a text element for the chart title
-  //         var chartTitle = chart.append("text")
-  //             .attr("x", 40)
-  //             .attr("y", 40)
-  //             .attr("class", "chartTitle")
-  //             .text("Number of " + expressed[3] + " ");
+  //set bars for each province
+  var bars = chart.selectAll(".bar")
+    .data(csvData)
+    .enter()
+    .append("rect")
+    .sort(function(a, b){
+      return b[expressed]-a[expressed]
+    })
+    .attr("class", function(d){
+      return "bar " + d.adm1_code;
+    })
+    .attr("width", chartInnerWidth / csvData.length - 1)
+    .on("mouseover", highlight)
+    .on("mouseout", dehighlight)
+    .on("mousemove", moveLabel);
 
-  //         //create vertical axis generator
-  //         var yAxis = d3.svg.axis()
-  //             .scale(yScale)
-  //             .orient("left");
+  //add style descriptor to each rect
+  var desc = bars.append("desc")
+    .text('{"stroke": "none", "stroke-width": "0px"}');
 
-  //         //place axis
-  //         var axis = chart.append("g")
-  //             .attr("class", "axis")
-  //             .attr("transform", translate)
-  //             .call(yAxis);
+   //create a text element for the chart title
+  var chartTitle = chart.append("text")
+    .attr("x", 40)
+    .attr("y", 40)
+    .attr("class", "chartTitle");
 
-  //         //create frame for chart border
-  //         var chartFrame = chart.append("rect")
-  //             .attr("class", "chartFrame")
-  //             .attr("width", chartInnerWidth)
-  //             .attr("height", chartInnerHeight)
-  //             .attr("transform", translate);
+  //create vertical axis generator
+  var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left");
 
-  //          var numbers = chart.selectAll(".numbers")
-  //             .data(StateData)
-  //             .enter()
-  //             .append("text")
-  //             .sort(function(a, b){
-  //                 return a[expressed]-b[expressed]
-  //             })
-  //             .attr("class", function(d){
-  //                 return "numbers " + d.adm1_code;
-  //             })
-  //             .attr("text-anchor", "middle")
-  //             .attr("x", function(d, i){
-  //                 var fraction = chartWidth / StateData.length;
-  //                 return i * fraction + (fraction - 1) / 2;
-  //             })
-  //             .attr("y", function(d){
-  //                 return chartHeight - yScale(parseFloat(d[expressed])) + 15;
-  //             })
-  //             .text(function(d){
-  //                 return d[expressed];
-  //             })
-  //         };
+  //place axis
+  var axis = chart.append("g")
+    .attr("class", "axis")
+    .attr("transform", translate)
+    .call(yAxis);
+
+  //create frame for chart border
+  var chartFrame = chart.append("rect")
+    .attr("class", "chartFrame")
+    .attr("width", chartInnerWidth)
+    .attr("height", chartInnerHeight)
+    .attr("transform", translate);
+
+  //set bar positions, heights, and colors
+  updateChart(bars, csvData.length, colorScale);
+};
+
+  
 })();
 
 
