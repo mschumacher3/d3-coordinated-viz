@@ -55,7 +55,7 @@
 
     //creates Albers equal area conic projection for the United States with Hawaii and Alaska included
     var projection = d3.geo.albersUsa()
-      .scale(1000)
+      .scale(883)
       .translate([width / 2, height / 2])
 
     var path = d3.geo.path()
@@ -69,7 +69,7 @@
 
       function callback(error, csvData, us){
         //translates the states topojson
-        var usStates = topojson.feature(us, us.objects.USAStates).features;
+        var usStates = topojson.feature(us, us.objects.USAStates);
         
         //add out usStates to the map
         var states = map.append("path")
@@ -78,10 +78,10 @@
           .attr("d", path);
 
         usStates = joinData(usStates, csvData);
-        var colorScale = makeColorScale(csvData);
-        setEnumerationUnits(usStates, map, path, colorScale);
-        setChart(csvData, colorScale);
-        createDropdown(csvData);   
+        //var colorScale = makeColorScale(csvData);
+        //setEnumerationUnits(usStates, map, path, colorScale);
+        //setChart(csvData, colorScale);
+        //createDropdown(csvData);   
       };
   };//end of setMap()
 
@@ -179,62 +179,62 @@
   };
 
 
-//function to create coordinated bar chart
-function setChart(StateData, colorScale){
-  //chart frame dimensions
-  // var chartWidth = window.innerWidth * 0.425,
-  //   chartHeight = 460;
+// //function to create coordinated bar chart
+// function setChart(StateData, colorScale){
+//   //chart frame dimensions
+//   // var chartWidth = window.innerWidth * 0.425,
+//   //   chartHeight = 460;
 
-  //create a second svg element to hold the bar chart
-  var chart = d3.select("body")
-    .append("svg")
-    .attr("width", chartWidth)
-    .attr("height", chartHeight)
-    .attr("class", "chart");
+//   //create a second svg element to hold the bar chart
+//   var chart = d3.select("body")
+//     .append("svg")
+//     .attr("width", chartWidth)
+//     .attr("height", chartHeight)
+//     .attr("class", "chart");
 
-  //create a rectangle for chart background fill
-  var chartBackground = chart.append("rect")
-    .attr("class", "chartBackground")
-    .attr("width", chartInnerWidth)
-    .attr("height", chartInnerHeight)
-    .attr("transform", translate);
+//   //create a rectangle for chart background fill
+//   var chartBackground = chart.append("rect")
+//     .attr("class", "chartBackground")
+//     .attr("width", chartInnerWidth)
+//     .attr("height", chartInnerHeight)
+//     .attr("transform", translate);
 
-  //set bars for each province
-  var bars = chart.selectAll(".bar")
-    .data(csvData)
-    .enter()
-    .append("rect")
-    .sort(function(a, b){
-      return b[expressed]-a[expressed]
-    })
-    .attr("class", function(d){
-      return "bar " + d.adm1_code;
-    })
-    .attr("width", chartInnerWidth / csvData.length - 1)
-    .on("mouseover", highlight)
-    .on("mouseout", dehighlight)
-    .on("mousemove", moveLabel);
+//   //set bars for each province
+//   var bars = chart.selectAll(".bar")
+//     .data(csvData)
+//     .enter()
+//     .append("rect")
+//     .sort(function(a, b){
+//       return b[expressed]-a[expressed]
+//     })
+//     .attr("class", function(d){
+//       return "bar " + d.adm1_code;
+//     })
+//     .attr("width", chartInnerWidth / csvData.length - 1)
+//     .on("mouseover", highlight)
+//     .on("mouseout", dehighlight)
+//     .on("mousemove", moveLabel);
 
-  //add style descriptor to each rect
-  var desc = bars.append("desc")
-    .text('{"stroke": "none", "stroke-width": "0px"}');
+//   //add style descriptor to each rect
+//   var desc = bars.append("desc")
+//     .text('{"stroke": "none", "stroke-width": "0px"}');
 
-   //create a text element for the chart title
-  var chartTitle = chart.append("text")
-    .attr("x", 40)
-    .attr("y", 40)
-    .attr("class", "chartTitle");
+//    //create a text element for the chart title
+//   var chartTitle = chart.append("text")
+//     .attr("x", 40)
+//     .attr("y", 40)
+//     .attr("class", "chartTitle");
 
-  //create vertical axis generator
-  var yAxis = d3.svg.axis()
-    .scale(yScale)
-    .orient("left");
+//   //create vertical axis generator
+//   var yAxis = d3.svg.axis()
+//     .scale(yScale)
+//     .orient("left");
 
-  //place axis
-  var axis = chart.append("g")
-    .attr("class", "axis")
-    .attr("transform", translate)
-    .call(yAxis);
+//   //place axis
+//   var axis = chart.append("g")
+//     .attr("class", "axis")
+//     .attr("transform", translate)
+//     .call(yAxis);
 
   //create frame for chart border
   var chartFrame = chart.append("rect")
@@ -243,9 +243,9 @@ function setChart(StateData, colorScale){
     .attr("height", chartInnerHeight)
     .attr("transform", translate);
 
-  //set bar positions, heights, and colors
-  updateChart(bars, csvData.length, colorScale);
-};
+//   //set bar positions, heights, and colors
+//   updateChart(bars, csvData.length, colorScale);
+// };
 
   
 })();

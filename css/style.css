@@ -1,17 +1,23 @@
+.contnet{
+    padding: 10px;
+    text-align: center;
+    background-color: #black;
+}
+h1{
+    font-family: "Lucida Grande";
+    font-size: 24px;
+    color: #black;
+}
+h2{
+    font-family: "Lucida Grande";
+    font-size: 18px;
+    color: #black;
+}
 .states {
 	fill: #d2d7dc;
 	stroke: #999;
 	stroke-width: 1.5px;
 }
-/*.gratLines {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1px;
-}
-
-.gratBackground{
-  fill: #D5E3FF;
-}*/
 .map{
 	position: absolute;
 	border: medium solid #999;
@@ -20,6 +26,7 @@
 }
 
 .chart {
+    border: medium solid #999;
     float: right;
     margin: 7px 20px 0 0;
 }
