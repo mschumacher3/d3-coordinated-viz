@@ -86,7 +86,7 @@
 
         //join csv data to GeoJSON enumeration units
         usStates = joinData(usStates, csvData);
-        //var colorScale = makeColorScale(csvData);
+        var colorScale = makeColorScale(csvData);
         //add enumeration units to the map
         setEnumerationUnits(usStates, map, path);
         //setChart(csvData, colorScale);
@@ -155,14 +155,21 @@
     ];
 
       //creates color scale generator
+      //quantile because data is not continuous
       var colorScale = d3.scale.quantile()
           .range(colorClasses);
+
+       //build two-value array of minimum and maximum expressed attribute values
+      var minmax = [
+          d3.min(data, function(d) { return parseFloat(d[expressed]); }),
+          d3.max(data, function(d) { return parseFloat(d[expressed]); })
+      ];
       //build array of all values of the expressed attribute
-      var domainArray = [];
-      for (var i=0; i<data.length; i++){
-          var val = parseFloat(data[i][expressed]);
-          domainArray.push(val);
-      };
+      // var domainArray = [];
+      // for (var i=0; i<data.length; i++){
+      //     var val = parseFloat(data[i][expressed]);
+      //     domainArray.push(val);
+      // };
 
       // //cluster data using ckmeans clustering algorithm to create natural breaks
       // var clusters = ss.ckmeans(domainArray, 5);
@@ -173,20 +180,21 @@
       // //remove first value from domain array to create class breakpoints
       // domainArray.shift();
       //assign array of expressed values as scale domain
-      colorScale.domain(domainArray);
+      colorScale.domain(minmax);
+      console.log(colorScale.quantiles()) 
       return colorScale;
   };
 
-  function choropleth(props, colorScale){
-    //make sure attribute value is a number
-    var val = parseFloat(props[expressed]);
-    //if attribute value exists, assign a color; otherwise assign gray
-    if (isNaN(val)) {
-        return "#CCC";
-    } else {
-        return colorScale(val);
-    };
-  };
+  // function choropleth(props, colorScale){
+  //   //make sure attribute value is a number
+  //   var val = parseFloat(props[expressed]);
+  //   //if attribute value exists, assign a color; otherwise assign gray
+  //   if (isNaN(val)) {
+  //       return "#CCC";
+  //   } else {
+  //       return colorScale(val);
+  //   };
+  // };
 
 
 // //function to create coordinated bar chart
