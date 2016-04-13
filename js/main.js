@@ -54,21 +54,25 @@
       .projection(projection);
 
     //uses queue.js to parallelize asynchronous data loading
+    //these are like AJAX functions. I think this is where my problem is. But Can't figure out exactly where
     d3_queue.queue()
       .defer(d3.csv, "data/StateData2.csv") //loads attributes from csv
       .defer(d3.json, "data/usStates.topojson") //loads choropleth spatial data
       .await(callback);
 
       function callback(error, csvData, us){
+        console.log(error);
+        console.log(csvData);
+        console.log(us);
         //translates the states topojson
-        var usStates = topojson.feature(us, us.objects.USAStates).features;
-        console.log(usStates);
+        // var usStates = topojson.feature(us, us.objects.USAStates).features;
+        // console.log(usStates);
         
-        //add out usStates to the map
-        var states = map.append("path")
-          .datum(usStates)
-          .attr("class", "states")
-          .attr("d", path);
+        // //add out usStates to the map
+        // var states = map.append("path")
+        //   .datum(usStates)
+        //   .attr("class", "states")
+          // .attr("d", path);
 
         // var states = map.selectAll(".states")
         //   .data(usStates)
