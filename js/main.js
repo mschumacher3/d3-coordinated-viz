@@ -34,7 +34,7 @@
 
   //sets up choropleth map
   function setMap(){
-    //map frame size
+    //map frame size. Adjusted so Chart and map can fit next to eachother.
     var width = window.innerWidth * 0.5,
       height = 500;
 
@@ -46,39 +46,41 @@
       .attr("height", height);
 
     //creates Albers equal area conic projection for the United States with Hawaii and Alaska included
+    //this is already set, so no center or rotate needed.
     var projection = d3.geo.albersUsa()
       .scale(883)
       .translate([width / 2, height / 2]);
-
+    //draws the spatial data as a path of stings of 'd' attributes
     var path = d3.geo.path()
-      .projection(projection);
+        .projection(projection);
 
     //uses queue.js to parallelize asynchronous data loading
-    //these are like AJAX functions. I think this is where my problem is. But Can't figure out exactly where
+    //these are like AJAX functions.
     d3_queue.queue()
       .defer(d3.csv, "data/StateData2.csv") //loads attributes from csv
       .defer(d3.json, "data/usStates.topojson") //loads choropleth spatial data
       .await(callback);
 
       function callback(error, csvData, us){
-        //translates the states topojson
+        //translates the states topojson. I think this is where I am having issues. Read APi documentation and not sure what is happening that is wrong.
+        //suppose to convert our topo to a geojson with featureclass
         var usStates = topojson.feature(us, us.objects.USAStates).features;
-        console.log(usStates);
         
-        // //add out usStates to the map
+        //add out usStates to the map
         // var states = map.append("path")
         //   .datum(usStates)
         //   .attr("class", "states")
-          // .attr("d", path);
-
-        // var states = map.selectAll(".states")
-        //   .data(usStates)
-        //   .enter()
-        //   .append("path")
-        //   .attr("class", function(d){
-        //       return "states " + d.properties.adm1_code;
-        //   })
-        //     .attr("d", path);
+        //   .attr("d", path);
+        //tried this way below just incase, did not do anything. This would just make
+        //sure that the two svg elements line up by connecting with key.
+        var states = map.selectAll(".states")
+          .data(usStates)
+          .enter()
+          .append("path")
+          .attr("class", function(d){
+              return "states " + d.properties.adm1_code;
+          })
+            .attr("d", path);
 
         usStates = joinData(usStates, csvData);
         var colorScale = makeColorScale(csvData);
