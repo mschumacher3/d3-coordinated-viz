@@ -2,17 +2,19 @@
 (function(){
 
   //pseudo-global variables
+  //took out one attribute that i thought was causing issues. 
+  //I have 4 now.
   var attrArray = ["Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"];
   var expressed = attrArray[0]; //initial attribute
 
-  //assigns chart titles to each variable
-  var chartTitles={
-      Norm_Num_firms:['Total Firms'],
-      Norm_M_firms:['of Firms Owned by Men'],
-      Norm_F_firms:['Firms Owned by Women'],
-      Norm_MI_firms:['Firms Owned by Minorities'],
-      Norm_NonMI_firms:['Firms not Owned by Minorities']
-  };
+  // //assigns chart titles to each variable
+  // var chartTitles={
+  //     Norm_Num_firms:['Total Firms'],
+  //     Norm_M_firms:['of Firms Owned by Men'],
+  //     Norm_F_firms:['Firms Owned by Women'],
+  //     Norm_MI_firms:['Firms Owned by Minorities'],
+  //     Norm_NonMI_firms:['Firms not Owned by Minorities']
+  // };
 
   // //chart frame dimensions
   // var chartWidth = window.innerWidth * 0.425,
@@ -25,9 +27,9 @@
   //   translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 
   //create a scale to size bars proportionally to frame and for axis
-  var yScale = d3.scale.linear()
-    .range([463, 0])
-    .domain([0, 110]);
+  // var yScale = d3.scale.linear()
+  //   .range([463, 0])
+  //   .domain([0, 110]);
 
   //begins script when window loads
   window.onload = setMap();
@@ -67,25 +69,27 @@
         var usStates = topojson.feature(us, us.objects.USAStates).features;
         
         //add out usStates to the map
-        // var states = map.append("path")
-        //   .datum(usStates)
-        //   .attr("class", "states")
-        //   .attr("d", path);
+        var states = map.append("path")
+          .datum(usStates)
+          .attr("class", "states")
+          .attr("d", path);
         //tried this way below just incase, did not do anything. This would just make
         //sure that the two svg elements line up by connecting with key.
-        var states = map.selectAll(".states")
-          .data(usStates)
-          .enter()
-          .append("path")
-          .attr("class", function(d){
-              return "states " + d.properties.adm1_code;
-          })
-            .attr("d", path);
+        // var states = map.selectAll(".states")
+        //   .data(usStates)
+        //   .enter()
+        //   .append("path")
+        //   .attr("class", function(d){
+        //       return "states " + d.properties.adm1_code;
+        //   })
+        //     .attr("d", path);
 
+        //join csv data to GeoJSON enumeration units
         usStates = joinData(usStates, csvData);
-        var colorScale = makeColorScale(csvData);
+        //var colorScale = makeColorScale(csvData);
+        //add enumeration units to the map
         setEnumerationUnits(usStates, map, path);
-        setChart(csvData, colorScale);
+        //setChart(csvData, colorScale);
         //createDropdown(csvData);   
       };
   };//end of setMap
@@ -93,25 +97,25 @@
 
   //writing a function to join the data from the csv and geojson
   function joinData (usStates, csvData){
-        //loops through csv to assign each set of csv attribute values to geojson
-        for (var i=0; i<csvData.length; i++){
-            var csvRegion = csvData[i];
-            var csvKey = csvRegion.adm1_code;
-          //loops through geojson regions to find correct region
-          for (var a=0; a<usStates.length; a++){
-            var geojsonProps = usStates[a].properties;
-            var geojsonKey = geojsonProps.adm1_code;
-            //where primary keys match, transfer csv data to geojson properties object
+    //loops through csv to assign each set of csv attribute values to geojson
+    for (var i=0; i<csvData.length; i++){
+      var csvRegion = csvData[i];
+      var csvKey = csvRegion.adm1_code;
+      //loops through geojson regions to find correct region
+        for (var a=0; a<usStates.length; a++){
+          var geojsonProps = usStates[a].properties;
+          var geojsonKey = geojsonProps.adm1_code;
+          //where primary keys match, transfer csv data to geojson properties object
             if (geojsonKey == csvKey){
               attrArray.forEach(function(attr){
                 var val = parseFloat(csvRegion[attr]); //get csv attribute value
                 geojsonProps[attr] = val;
               });
             };
-          };//just addded
-      };
-      console.log(usStates);
-      return usStates;
+        };
+    };
+    console.log(usStates);
+    return usStates;
   };
 
   function setEnumerationUnits(usStates, map, path, colorScale){ 
