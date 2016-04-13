@@ -110,7 +110,7 @@
       return usStates;
   };
 
-  function setEnumerationUnits(usStates, map, path){ 
+  function setEnumerationUnits(usStates, map, path, colorScale){ 
     console.log("drawing?")
     var state = map.selectAll(".state")
       .data(usStates)
@@ -132,7 +132,7 @@
       // .on("mousemove", moveLabel);
 
    //adds style descriptor to each path
-    var desc= states.append("desc")
+    var desc= state.append("desc")
     .text('{"stroke": "#000", "stroke-width": "0.5px"}');
   };
 
@@ -156,13 +156,13 @@
           domainArray.push(val);
       };
 
-      //cluster data using ckmeans clustering algorithm to create natural breaks
-      //var clusters = ss.ckmeans(domainArray, 5);
-      //reset domain array to cluster minimums
+      // //cluster data using ckmeans clustering algorithm to create natural breaks
+      // var clusters = ss.ckmeans(domainArray, 5);
+      // //reset domain array to cluster minimums
       // domainArray = clusters.map(function(d){
       //     return d3.min(d);
       // });
-      //remove first value from domain array to create class breakpoints
+      // //remove first value from domain array to create class breakpoints
       // domainArray.shift();
       //assign array of expressed values as scale domain
       colorScale.domain(domainArray);

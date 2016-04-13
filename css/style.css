@@ -63,7 +63,7 @@ h4{
 
 .chartFrame {
     fill: none;
-    stroke: #252525;
+    stroke: medium solid #252525;
     stroke-width: 3px;
     shape-rendering: crispEdges;
 }
