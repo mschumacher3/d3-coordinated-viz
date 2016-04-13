@@ -46,9 +46,10 @@ h4{
 }
 
 .chart {
+    background-color: rgba(128,128,128,.2);
     border: medium solid #999;
     float: right;
-    margin: 7px 20px 0 0;
+    margin: 10px 20px 0 0;
 }
 
 .chartTitle {
@@ -57,9 +58,6 @@ h4{
     font-weight: bold;
 }
 
-.chartBackground {
-    fill: rgba(128,128,128,.2);
-}
 
 .chartFrame {
     fill: none;

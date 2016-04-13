@@ -3,7 +3,7 @@
 
   //pseudo-global variables
   var attrArray = ["Norm_Num_firms", "Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"];
-  var expressed = attrArray[0]; //initial attribute
+  var expressed = attrArray[1]; //initial attribute
 
   //assigns chart titles to each variable
   var chartTitles={
@@ -91,11 +91,11 @@
   //writing a function to join the data from the csv and geojson
   function joinData (usStates, csvData){
         //loops through csv to assign each set of csv attribute values to geojson
-        for (var i=0; i<csvData.length; i++){
+        for (var i=1; i<csvData.length; i++){
             var csvRegion = csvData[i];
             var csvKey = csvRegion.adm1_code;
           //loops through geojson regions to find correct region
-          for (var a=0; a<usStates.length; a++){
+          for (var a=1; a<usStates.length; a++){
             var geojsonProps = usStates[a].properties;
             var geojsonKey = geojsonProps.adm1_code;
 
@@ -173,10 +173,10 @@
     //make sure attribute value is a number
     var val = parseFloat(props[expressed]);
     //if attribute value exists, assign a color; otherwise assign gray
-    if (val && val != NaN){
-      return colorScale(val);
+    if (isNaN(val)) {
+        return "#CCC";
     } else {
-      return "#CCC";
+        return colorScale(val);
     };
   };
 
@@ -184,8 +184,8 @@
 //function to create coordinated bar chart
 function setChart(StateData, colorScale){
   //chart frame dimensions
-  // var chartWidth = window.innerWidth * 0.425,
-  //   chartHeight = 460;
+  var chartWidth = window.innerWidth * 0.425,
+    chartHeight = 500;
 
   //create a second svg element to hold the bar chart
   var chart = d3.select("body")
@@ -212,10 +212,10 @@ function setChart(StateData, colorScale){
     .attr("class", function(d){
       return "bar " + d.adm1_code;
     })
-    .attr("width", chartInnerWidth / csvData.length - 1)
-    .on("mouseover", highlight)
-    .on("mouseout", dehighlight)
-    .on("mousemove", moveLabel);
+    // .attr("width", chartInnerWidth / csvData.length - 1)
+    // .on("mouseover", highlight)
+    // .on("mouseout", dehighlight)
+    // .on("mousemove", moveLabel);
 
   //add style descriptor to each rect
   var desc = bars.append("desc")
@@ -246,7 +246,7 @@ function setChart(StateData, colorScale){
     .attr("transform", translate);
 
 //   //set bar positions, heights, and colors
-//   updateChart(bars, csvData.length, colorScale);
+    updateChart(bars, csvData.length, colorScale);
 };
 //function to create a dropdown menu for attribute selection
 function createDropdown(csvData){
