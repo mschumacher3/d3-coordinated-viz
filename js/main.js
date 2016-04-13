@@ -108,12 +108,12 @@
   };
 
   function setEnumerationUnits(usStates, map, path, colorScale){ 
-    var state = map.selectAll(".state")
+    var states = map.selectAll(".states")
       .data(usStates)
       .enter()
       .append("path")
       .attr("class", function(d){
-        return "state " + d.properties.adm1_code;
+        return "states " + d.properties.adm1_code;
       })
       .attr("d",path)
       .style("fill", function(d){
@@ -133,7 +133,7 @@
       "#fcae91",
       "#fb6a4a",
       "#de2d26",
-      "#a50f15"
+      //"#a50f15"
     ];
 
     //creates color scale generator
@@ -147,8 +147,11 @@
         var val = parseFloat(data[i][expressed]);
         domainArray.push(val);
       };
+      //this domain shift removes the first value of the array and returns that item. We want 3 breakpoints for now.
+      domainArray.shift();
       //assign array of expressed values as scale domain
       colorScale.domain(domainArray);
+      //console.log(colorScale.quantiles())
       return colorScale;
   };
 

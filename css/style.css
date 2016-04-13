@@ -51,7 +51,7 @@ h4{
 }
 .states {
 	fill: #fff;
-	stroke: #fff;
+	stroke: #f22460;
 	stroke-width: 1.5px;
 }
 .map{
@@ -76,12 +76,12 @@ h4{
 }
 
 
-.chartFrame {
+/*.chartFrame {
     fill: none;
     stroke: medium solid #252525;
     stroke-width: 3px;
     shape-rendering: crispEdges;
-}
+}*/
 
 .axis path,
 .axis line {
