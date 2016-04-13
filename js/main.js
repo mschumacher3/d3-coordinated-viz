@@ -61,12 +61,9 @@
       .await(callback);
 
       function callback(error, csvData, us){
-        console.log(error);
-        console.log(csvData);
-        console.log(us);
         //translates the states topojson
-        // var usStates = topojson.feature(us, us.objects.USAStates).features;
-        // console.log(usStates);
+        var usStates = topojson.feature(us, us.objects.USAStates).features;
+        console.log(usStates);
         
         // //add out usStates to the map
         // var states = map.append("path")
