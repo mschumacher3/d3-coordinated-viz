@@ -159,28 +159,14 @@
       var colorScale = d3.scale.quantile()
           .range(colorClasses);
 
-       //build two-value array of minimum and maximum expressed attribute values
-      var minmax = [
-          d3.min(data, function(d) { return parseFloat(d[expressed]); }),
-          d3.max(data, function(d) { return parseFloat(d[expressed]); })
-      ];
       //build array of all values of the expressed attribute
-      // var domainArray = [];
-      // for (var i=0; i<data.length; i++){
-      //     var val = parseFloat(data[i][expressed]);
-      //     domainArray.push(val);
-      // };
-
-      // //cluster data using ckmeans clustering algorithm to create natural breaks
-      // var clusters = ss.ckmeans(domainArray, 5);
-      // //reset domain array to cluster minimums
-      // domainArray = clusters.map(function(d){
-      //     return d3.min(d);
-      // });
-      // //remove first value from domain array to create class breakpoints
-      // domainArray.shift();
+      var domainArray = [];
+        for (var i=0; i<data.length; i++){
+          var val = parseFloat(data[i][expressed]);
+          domainArray.push(val);
+         };
       //assign array of expressed values as scale domain
-      colorScale.domain(minmax);
+      colorScale.domain(domainArray);
       console.log(colorScale.quantiles()) 
       return colorScale;
   };
