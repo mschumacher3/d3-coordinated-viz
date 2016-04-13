@@ -3,6 +3,7 @@
     text-align: center;
     background-color: #fee5d9;
 }
+
 h1{
     font-family: "Lucida Fax";
     font-size: 32px;
@@ -29,9 +30,24 @@ h4{
 }
 #content{
     text-align: center;
-    width: 1100px;
-    padding: 50px;
+    padding: 30px;
     color: black;
+    float: left;
+    background-color: #e5e5e5;
+}
+#elements{
+    padding: 30px;
+    color: black;
+    text-align: center;
+    background-color: #e5e5e5;
+    float: right;
+}
+#source{
+    position: relative;
+    text-align: center;
+    padding: 30px;
+    color: black;
+    background-color: #e5e5e5;
 }
 .states {
 	fill: #fff;
@@ -39,8 +55,8 @@ h4{
 	stroke-width: 1.5px;
 }
 .map{
-	position: absolute;
-	border: medium solid #252525;
+	position: relative;
+	border: medium solid #e5e5e5;
 	padding: 20px;
     
 
@@ -48,7 +64,7 @@ h4{
 
 .chart {
     background-color: rgba(128,128,128,.2);
-    border: medium solid #999;
+    border: medium solid #e5e5e5;
     float: right;
     margin: 10px 20px 0 0;
 }

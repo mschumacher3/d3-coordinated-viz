@@ -1,35 +1,35 @@
-//wraps everything in a self-executing anonymous function to move to local scope
+//main.js file for D3 choropleth lab//
+//wraps everything in a self-executing anonymous function to move to local scope, funciton ends at bottom of main.js
 (function(){
 
   //pseudo-global variables
-  //took out one attribute that i thought was causing issues. 
-  //I have 4 now.
+  //took out one attribute that i thought was causing issues-- Norm_Num_firms.  
   var attrArray = ["Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"];
   var expressed = attrArray[0]; //initial attribute
 
-  // //assigns chart titles to each variable
-  // var chartTitles={
-  //     Norm_Num_firms:['Total Firms'],
-  //     Norm_M_firms:['of Firms Owned by Men'],
-  //     Norm_F_firms:['Firms Owned by Women'],
-  //     Norm_MI_firms:['Firms Owned by Minorities'],
-  //     Norm_NonMI_firms:['Firms not Owned by Minorities']
-  // };
+  //assigns chart titles to each variable
+  var chartTitles={
+      Norm_Num_firms:['Total Firms'],
+      Norm_M_firms:['of Firms Owned by Men'],
+      Norm_F_firms:['Firms Owned by Women'],
+      Norm_MI_firms:['Firms Owned by Minorities'],
+      Norm_NonMI_firms:['Firms not Owned by Minorities']
+  };
 
-  // //chart frame dimensions
-  // var chartWidth = window.innerWidth * 0.425,
-  //   chartHeight = 473,
-  //   leftPadding = 25,
-  //   rightPadding = 2,
-  //   topBottomPadding = 5,
-  //   chartInnerWidth = chartWidth - leftPadding - rightPadding,
-  //   chartInnerHeight = chartHeight - topBottomPadding * 2,
-  //   translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+  //chart frame dimensions
+  var chartWidth = window.innerWidth * 0.425,
+    chartHeight = 473,
+    leftPadding = 25,
+    rightPadding = 2,
+    topBottomPadding = 5,
+    chartInnerWidth = chartWidth - leftPadding - rightPadding,
+    chartInnerHeight = chartHeight - topBottomPadding * 2,
+    translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 
   //create a scale to size bars proportionally to frame and for axis
-  // var yScale = d3.scale.linear()
-  //   .range([463, 0])
-  //   .domain([0, 110]);
+  var yScale = d3.scale.linear()
+    .range([463, 0])
+    .domain([0, 110]);
 
   //begins script when window loads
   window.onload = setMap();
@@ -73,29 +73,19 @@
           .datum(usStates)
           .attr("class", "states")
           .attr("d", path);
-        //tried this way below just incase, did not do anything. This would just make
-        //sure that the two svg elements line up by connecting with key.
-        // var states = map.selectAll(".states")
-        //   .data(usStates)
-        //   .enter()
-        //   .append("path")
-        //   .attr("class", function(d){
-        //       return "states " + d.properties.adm1_code;
-        //   })
-        //     .attr("d", path);
 
-        //join csv data to GeoJSON enumeration units
+        //joins csv data to GeoJSON enumeration units
         usStates = joinData(usStates, csvData);
         var colorScale = makeColorScale(csvData);
-        //add enumeration units to the map
+        //adds enumeration units to the map
         setEnumerationUnits(usStates, map, path);
-        //setChart(csvData, colorScale);
-        //createDropdown(csvData);   
+        setChart(csvData, colorScale);
+        createDropdown(csvData);   
       };
   };//end of setMap
 
 
-  //writing a function to join the data from the csv and geojson
+  //writes a function to join the data from the csv and geojson
   function joinData (usStates, csvData){
     //loops through csv to assign each set of csv attribute values to geojson
     for (var i=0; i<csvData.length; i++){
@@ -114,12 +104,10 @@
             };
         };
     };
-    console.log(usStates);
     return usStates;
   };
 
   function setEnumerationUnits(usStates, map, path, colorScale){ 
-    console.log("drawing?")
     var state = map.selectAll(".state")
       .data(usStates)
       .enter()
@@ -131,14 +119,7 @@
       .style("fill", function(d){
         return choropleth(d.properties, colorScale);
       });
-      // .on("mouseover", function(d){
-      //   highlight(d.properties);
-      // })
-      // .on("mouseout", function(d){
-      // dehighlight(d.properties);
-      // })
-      // .on("mousemove", moveLabel);
-
+     
    //adds style descriptor to each path
     var desc= state.append("desc")
     .text('{"stroke": "#000", "stroke-width": "0.5px"}');
@@ -146,6 +127,7 @@
 
   //function to create color scale generator
   function makeColorScale(data){
+    //orange color ramp from color brewer
     var colorClasses = [
       "#fee5d9",
       "#fcae91",
@@ -154,33 +136,32 @@
       "#a50f15"
     ];
 
-      //creates color scale generator
-      //quantile because data is not continuous
-      var colorScale = d3.scale.quantile()
-          .range(colorClasses);
+    //creates color scale generator
+    //quantile because data is not continuous
+    var colorScale = d3.scale.quantile()
+      .range(colorClasses);
 
       //build array of all values of the expressed attribute
-      var domainArray = [];
-        for (var i=0; i<data.length; i++){
-          var val = parseFloat(data[i][expressed]);
-          domainArray.push(val);
-         };
+    var domainArray = [];
+      for (var i=0; i<data.length; i++){
+        var val = parseFloat(data[i][expressed]);
+        domainArray.push(val);
+      };
       //assign array of expressed values as scale domain
       colorScale.domain(domainArray);
-      console.log(colorScale.quantiles()) 
       return colorScale;
   };
 
-  // function choropleth(props, colorScale){
-  //   //make sure attribute value is a number
-  //   var val = parseFloat(props[expressed]);
-  //   //if attribute value exists, assign a color; otherwise assign gray
-  //   if (isNaN(val)) {
-  //       return "#CCC";
-  //   } else {
-  //       return colorScale(val);
-  //   };
-  // };
+//   function choropleth(props, colorScale){
+//     //make sure attribute value is a number
+//     var val = parseFloat(props[expressed]);
+//     //if attribute value exists, assign a color; otherwise assign gray
+//     if (isNaN(val)) {
+//         return "#CCC";
+//     } else {
+//         return colorScale(val);
+//     };
+//   };
 
 
 // //function to create coordinated bar chart
