@@ -7,11 +7,11 @@
 
   //assigns chart titles to each variable
   var chartTitles={
-      Norm_Num_firms:['Total Number of Firms'],
-      Norm_M_firms:['Number of Firms Owned by Men'],
-      Norm_F_firms:['Number of Firms Owned by Women'],
-      Norm_MI_firms:['Number of Firms Owned by Minorities'],
-      Norm_NonMI_firms:['Number of Firms not Owned by Minorities']};
+      Norm_Num_firms:['Total Firms'],
+      Norm_M_firms:['of Firms Owned by Men'],
+      Norm_F_firms:['Firms Owned by Women'],
+      Norm_MI_firms:['Firms Owned by Minorities'],
+      Norm_NonMI_firms:['Firms not Owned by Minorities']};
 
   //chart frame dimensions
   var chartWidth = window.innerWidth * 0.425,
@@ -63,22 +63,22 @@
         var usStates = topojson.feature(us, us.objects.USAStates).features;
         console.log(usStates);
         
-        // //add out usStates to the map
-        // var states = map.append("path")
-        //   .datum(usStates)
-        //   .attr("class", "states")
-        //   .attr("d", path);
+        //add out usStates to the map
+        var states = map.append("path")
+          .datum(usStates)
+          .attr("class", "states")
+          .attr("d", path);
 
-        var states = map.selectAll(".states")
-          .data(usStates)
-          .enter()
-          .append("path")
-          .attr("class", function(d){
-              return "states " + d.properties.adm1_code;
-          })
-            .attr("d", path);
+        // var states = map.selectAll(".states")
+        //   .data(usStates)
+        //   .enter()
+        //   .append("path")
+        //   .attr("class", function(d){
+        //       return "states " + d.properties.adm1_code;
+        //   })
+        //     .attr("d", path);
 
-        //usStates = joinData(usStates, csvData);
+        usStates = joinData(usStates, csvData);
         //var colorScale = makeColorScale(csvData);
         setEnumerationUnits(usStates, map, path);
         //setChart(csvData, colorScale);
@@ -90,21 +90,20 @@
   //writing a function to join the data from the csv and geojson
   function joinData (usStates, csvData){
         //loops through csv to assign each set of csv attribute values to geojson
-        for (var i= 0; i<csvData.length; i++){
+        for (var i=0; i<csvData.length; i++){
             var csvRegion = csvData[i];
             var csvKey = csvRegion.adm1_code;
           //loops through geojson regions to find correct region
-          for (var a=0; a<usStates.length; a++){
+          for (var a=0; a<usStates.length; a++)
             var geojsonProps = usStates[a].properties;
             var geojsonKey = geojsonProps.adm1_code;
 
-            if (geojsonKey==csvKey){
+            if (geojsonKey == csvKey){
               attrArray.forEach(function(attr){
-                var val = parseFloat(csvRegion[attr]);
+                var val = parseFloat(csvRegion[attr]); //get csv attribute value
                 geojsonProps[attr] = val;
               });
             };
-          };
       };
       return usStates;
   };

@@ -7,29 +7,35 @@ h1{
     font-family: "Lucida Fax";
     font-size: 32px;
     color: black;
+    text-align: center;
 }
 h2{
     font-family: "Lucida Fax";
     font-size: 19px;
     color: black;
+    text-align: center;
 }
 h3{
     font-family: "Lucida Fax";
-    font-size: 18px;
+    font-size: 16px;
     color: black;
+    text-align: center;
 }
 h4{
     font-family: "Lucida Fax";
     font-size: 14px;
     color: black;
+    text-align: center;
 }
 #content{
+    text-align: right;
+    width: 500px;
     padding: 50px;
     color: black;
 }
 .states {
-	fill: #d2d7dc;
-	stroke: #999;
+	fill: #fff;
+	stroke: #fff;
 	stroke-width: 1.5px;
 }
 .map{
