@@ -1,7 +1,7 @@
 #description{
     padding: 10px;
     text-align: center;
-    background-color: #fedebc;
+    background-color: #fee5d9;
 }
 h1{
     font-family: "Lucida Fax";
@@ -34,7 +34,7 @@ h4{
 }
 .map{
 	position: absolute;
-	border: medium solid #ba5f02;
+	border: medium solid #252525;
 	padding: 20px;
 
 }
@@ -57,7 +57,7 @@ h4{
 
 .chartFrame {
     fill: none;
-    stroke: #999;
+    stroke: #252525;
     stroke-width: 3px;
     shape-rendering: crispEdges;
 }
