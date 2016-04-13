@@ -3,7 +3,7 @@
 
   //pseudo-global variables
   var attrArray = ["Norm_Num_firms", "Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"];
-  var expressed = attrArray[1]; //initial attribute
+  var expressed = attrArray[0]; //initial attribute
 
   //assigns chart titles to each variable
   var chartTitles={
@@ -55,7 +55,7 @@
 
     //uses queue.js to parallelize asynchronous data loading
     d3_queue.queue()
-      .defer(d3.csv, "data/StateData.csv") //loads attributes from csv
+      .defer(d3.csv, "data/StateData2.csv") //loads attributes from csv
       .defer(d3.json, "data/usStates.topojson") //loads choropleth spatial data
       .await(callback);
 
@@ -91,11 +91,11 @@
   //writing a function to join the data from the csv and geojson
   function joinData (usStates, csvData){
         //loops through csv to assign each set of csv attribute values to geojson
-        for (var i=1; i<csvData.length; i++){
+        for (var i=0; i<csvData.length; i++){
             var csvRegion = csvData[i];
             var csvKey = csvRegion.adm1_code;
           //loops through geojson regions to find correct region
-          for (var a=1; a<usStates.length; a++){
+          for (var a=0; a<usStates.length; a++){
             var geojsonProps = usStates[a].properties;
             var geojsonKey = geojsonProps.adm1_code;
 
@@ -182,17 +182,17 @@
 
 
 //function to create coordinated bar chart
-function setChart(StateData, colorScale){
+function setChart(csvData, colorScale){
   //chart frame dimensions
   var chartWidth = window.innerWidth * 0.425,
-    chartHeight = 500;
+    chartHeight = 525;
 
   //create a second svg element to hold the bar chart
   var chart = d3.select("body")
-    .append("svg")
-    .attr("width", chartWidth)
-    .attr("height", chartHeight)
-    .attr("class", "chart");
+        .append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .attr("class", "chart");
 
   //create a rectangle for chart background fill
   var chartBackground = chart.append("rect")
@@ -202,16 +202,22 @@ function setChart(StateData, colorScale){
     .attr("transform", translate);
 
   //set bars for each province
-  var bars = chart.selectAll(".bar")
-    .data(csvData)
-    .enter()
-    .append("rect")
-    .sort(function(a, b){
-      return b[expressed]-a[expressed]
-    })
-    .attr("class", function(d){
-      return "bar " + d.adm1_code;
-    })
+  var bars = chart.selectAll(".bars")
+        .data(csvData)
+        .enter()
+        .append("rect")
+        .attr("class", function(d){
+            return "bars " + d.adm1_code;
+        })
+        .attr("width", chartWidth / csvData.length - 1)
+        .attr("x", function(d, i){
+            return i * (chartWidth / csvData.length);
+        })
+        .attr("height", 460)
+        .attr("y", 0);
+        // .style("fill", function(d){
+        //     return choropleth(d, colorScale);
+        // });
     // .attr("width", chartInnerWidth / csvData.length - 1)
     // .on("mouseover", highlight)
     // .on("mouseout", dehighlight)
