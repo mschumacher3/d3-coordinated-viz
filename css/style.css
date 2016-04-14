@@ -51,13 +51,14 @@ h4{
 }
 .states {
 	fill: #fff;
-	stroke: #f22460;
+	stroke: #fff;
 	stroke-width: 1.5px;
 }
 .map{
 	position: relative;
 	border: medium solid #e5e5e5;
 	padding: 20px;
+    background-color: #e5e5e5;
     
 
 }

@@ -78,7 +78,7 @@
         usStates = joinData(usStates, csvData);
         var colorScale = makeColorScale(csvData);
         //adds enumeration units to the map
-        setEnumerationUnits(usStates, map, path);
+        setEnumerationUnits(usStates, map, path, colorScale);
         setChart(csvData, colorScale);
         createDropdown(csvData);   
       };
@@ -108,6 +108,7 @@
   };
 
   function setEnumerationUnits(usStates, map, path, colorScale){ 
+    console.log("reaching?");
     var states = map.selectAll(".states")
       .data(usStates)
       .enter()
@@ -117,11 +118,11 @@
       })
       .attr("d",path)
       .style("fill", function(d){
-        return choropleth(d.properties, colorScale);
+        return colorScale(d.properties[expressed]);
       });
      
    //adds style descriptor to each path
-    var desc= state.append("desc")
+    var desc= states.append("desc")
     .text('{"stroke": "#000", "stroke-width": "0.5px"}');
   };
 
@@ -135,7 +136,7 @@
       "#de2d26",
       //"#a50f15"
     ];
-
+    console.log(colorClasses);
     //creates color scale generator
     //quantile because data is not continuous
     var colorScale = d3.scale.quantile()
@@ -151,20 +152,21 @@
       domainArray.shift();
       //assign array of expressed values as scale domain
       colorScale.domain(domainArray);
-      //console.log(colorScale.quantiles())
+      console.log(colorScale.quantiles())
       return colorScale;
   };
 
-//   function choropleth(props, colorScale){
-//     //make sure attribute value is a number
-//     var val = parseFloat(props[expressed]);
-//     //if attribute value exists, assign a color; otherwise assign gray
-//     if (isNaN(val)) {
-//         return "#CCC";
-//     } else {
-//         return colorScale(val);
-//     };
-//   };
+  //I do not have any no data regions, but kept this here incase something is not read in correctly
+  function choropleth(props, colorScale){
+    //make sure attribute value is a number
+    var val = parseFloat(props[expressed]);
+    //if attribute value exists, assign a color; otherwise assign gray
+    if (isNaN(val)) {
+        return "#CCC";
+    } else {
+        return colorScale(val);
+    };
+  };
 
 
 // //function to create coordinated bar chart
