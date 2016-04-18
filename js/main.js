@@ -171,6 +171,7 @@
 
 //function to create coordinated bar chart
 function setChart(csvData, colorScale){
+  console.log("got to set chart");
   //chart frame dimensions
   var chartWidth = window.innerWidth * 0.425,
     chartHeight = 525;
@@ -189,20 +190,20 @@ function setChart(csvData, colorScale){
   //   .attr("height", chartInnerHeight)
   //   .attr("transform", translate);
 
-//   //set bars for each province
-//   var bars = chart.selectAll(".bars")
-//         .data(csvData)
-//         .enter()
-//         .append("rect")
-//         .attr("class", function(d){
-//             return "bars " + d.adm1_code;
-//         })
-//         .attr("width", chartWidth / csvData.length - 1)
-//         .attr("x", function(d, i){
-//             return i * (chartWidth / csvData.length);
-//         })
-//         .attr("height", 460)
-//         .attr("y", 0);
+  //set bars for each province
+  var bars = chart.selectAll(".bars")
+        .data(csvData)
+        .enter()
+        .append("rect")
+        .attr("class", function(d){
+            return "bars " + d.adm1_code;
+        })
+        .attr("width", chartWidth / csvData.length - 1)
+        .attr("x", function(d, i){
+            return i * (chartWidth / csvData.length);
+        })
+        .attr("height", 460)
+        .attr("y", 0);
 //         // .style("fill", function(d){
 //         //     return choropleth(d, colorScale);
 //         // });
@@ -404,7 +405,7 @@ function setChart(csvData, colorScale){
 //       "left": x + "px",
 //       "top": y + "px"
 //     });
-// };
+ };
 
   
 })();

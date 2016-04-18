@@ -28,6 +28,13 @@ h4{
     color: black;
     text-align: center;
 }
+.chart {
+    background-color: rgba(128,128,128,.2);
+    border: medium solid #e5e5e5;
+    float: right;
+    /*position: relative;*/
+    margin: 10px 20px 0 0;
+}
 #content{
     text-align: center;
     padding: 30px;
@@ -43,7 +50,7 @@ h4{
     float: right;
 }
 #source{
-    position: relative;
+    position: absolute;
     text-align: center;
     padding: 30px;
     color: black;
@@ -63,12 +70,7 @@ h4{
 
 }
 
-.chart {
-    background-color: rgba(128,128,128,.2);
-    border: medium solid #e5e5e5;
-    float: right;
-    margin: 10px 20px 0 0;
-}
+
 
 .chartTitle {
     font-family: sans-serif;
