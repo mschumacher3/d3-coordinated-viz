@@ -2,6 +2,8 @@
 //wraps everything in a self-executing anonymous function to move to local scope, funciton ends at bottom of main.js
 (function(){
 
+
+
   //pseudo-global variables
   //took out one attribute that i thought was causing issues-- Norm_Num_firms.  
   var attrArray = ["Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms","Norm_Num_Firms"];
@@ -9,13 +11,13 @@
  
 
   //assigns chart titles to each variable
-  var chartTitle={
-      Norm_Num_firms:['Total Firms'],
-      Norm_M_firms:['of Firms Owned by Men'],
-      Norm_F_firms:['Firms Owned by Women'],
-      Norm_MI_firms:['Firms Owned by Minorities'],
-      Norm_NonMI_firms:['Firms not Owned by Minorities']
-  };
+  var chartTitle=[
+      "Firms Owned by Men",
+      "Firms Owned by Women",
+      "Firms Owned by Minorities",
+      "Firms not Owned by Minorities",
+      "Total Firms"
+  ];
 
   //chart frame dimensions
   var chartWidth = window.innerWidth * 0.425,
@@ -78,13 +80,13 @@
         //joins csv data to GeoJSON enumeration units
         usStates = joinData(usStates, csvData);
         var colorScale = makeColorScale(csvData);
+        createMyDropdown(csvData);   
         //adds enumeration units to the map
         setEnumerationUnits(usStates, map, path, colorScale);
         setChart(csvData, colorScale);
-        createDropdown(csvData);   
+        
       };
   };//end of setMap
-
 
   //writes a function to join the data from the csv and geojson
   function joinData (usStates, csvData){
@@ -108,6 +110,7 @@
     return usStates;
   };
 
+
   function setEnumerationUnits(usStates, map, path, colorScale){ 
     console.log("reaching setEnumerationUnits?");
     var states = map.selectAll(".states")
@@ -126,6 +129,7 @@
     var desc= states.append("desc")
     .text('{"stroke": "#000", "stroke-width": "0.5px"}');
   };
+
 
   //function to create color scale generator
   function makeColorScale(data){
@@ -203,32 +207,6 @@ function setChart(csvData, colorScale){
         .attr("y", function(d){
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
         });
-        // .style = ("fill", function(d){
-        //   console.log("applying style to chart?");
-        //     return choropleth(d, colorScale);
-        // });
-
-  var numbers = chart.selectAll(".numbers")
-        .data(csvData)
-        .enter()
-        .append("text")
-        .sort(function(a, b){
-            return a[expressed]-b[expressed]
-        })
-        .attr("class", function(d){
-            return "numbers " + d.adm1_code;
-        })
-        .attr("text-anchor", "middle")
-        .attr("x", function(d, i){
-            var fraction = chartWidth / csvData.length;
-            return i * fraction + (fraction - 1) / 2;
-        })
-        .attr("y", function(d){
-            return chartHeight - yScale(parseFloat(d[expressed])) + 15;
-        })
-        .text(function(d){
-            return d[expressed];
-        });
 
      //create a text element for the chart title
   var chartTitle = chart.append("text")
@@ -252,7 +230,7 @@ function setChart(csvData, colorScale){
 
 };
 //function to create a dropdown menu for attribute selection
-function createDropdown(csvData){
+function createMyDropdown(csvData){
   console.log("reaching createDropdown?");
   //adds elements
   var dropdown = d3.select("body")
@@ -333,9 +311,11 @@ function updateChart(bars, n, colorScale){
       return choropleth(d, colorScale);
     });
 
-  chartTitles = d3.select(".chartTitles")
-        .text(chartTitles);
+    var chartTitle = d3.select(".chartTitle")
+      .text("Number of Variable " + expressed[3] + " in each state");
 };
+
+
 
 // //function to highlight enumeration units and bars
 // function highlight(props){
@@ -422,12 +402,7 @@ function updateChart(bars, n, colorScale){
 //     });
 
 
-  
 })();
-
-
-
-
 
 
 
