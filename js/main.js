@@ -6,6 +6,10 @@
   //took out one attribute that i thought was causing issues-- Norm_Num_firms.  
   var attrArray = ["Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"];
   var expressed = attrArray[0]; //initial attribute
+  //create a scale to size bars proportionally to frame and for axis
+  var yScale = d3.scale.linear()
+    .range([800, 0])
+    .domain([0, 100]);
 
   //assigns chart titles to each variable
   var chartTitles={
@@ -25,11 +29,6 @@
     chartInnerWidth = chartWidth - leftPadding - rightPadding,
     chartInnerHeight = chartHeight - topBottomPadding * 2,
     translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
-
-  //create a scale to size bars proportionally to frame and for axis
-  var yScale = d3.scale.linear()
-    .range([463, 0])
-    .domain([0, 110]);
 
   //begins script when window loads
   window.onload = setMap();
@@ -80,7 +79,7 @@
         //adds enumeration units to the map
         setEnumerationUnits(usStates, map, path, colorScale);
         setChart(csvData, colorScale);
-        createDropdown(csvData);   
+        //createDropdown(csvData);   
       };
   };//end of setMap
 
@@ -195,6 +194,9 @@ function setChart(csvData, colorScale){
         .data(csvData)
         .enter()
         .append("rect")
+        .sort(function(a, b){
+            return a[expressed]-b[expressed]
+        })
         .attr("class", function(d){
             return "bars " + d.adm1_code;
         })
@@ -202,11 +204,38 @@ function setChart(csvData, colorScale){
         .attr("x", function(d, i){
             return i * (chartWidth / csvData.length);
         })
-        .attr("height", 460)
-        .attr("y", 0);
-//         // .style("fill", function(d){
-//         //     return choropleth(d, colorScale);
-//         // });
+        .attr("height", function(d){
+            return yScale(parseFloat(d[expressed]));
+        })
+        .attr("y", function(d){
+            return chartHeight - yScale(parseFloat(d[expressed]));
+        });
+        // .style = ("fill", function(d){
+        //   console.log("applying style to chart?");
+        //     return choropleth(d, colorScale);
+        // });
+
+  var numbers = chart.selectAll(".numbers")
+        .data(csvData)
+        .enter()
+        .append("text")
+        .sort(function(a, b){
+            return a[expressed]-b[expressed]
+        })
+        .attr("class", function(d){
+            return "numbers " + d.adm1_code;
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function(d, i){
+            var fraction = chartWidth / csvData.length;
+            return i * fraction + (fraction - 1) / 2;
+        })
+        .attr("y", function(d){
+            return chartHeight - yScale(parseFloat(d[expressed])) + 15;
+        })
+        .text(function(d){
+            return d[expressed];
+        });
 //     // .attr("width", chartInnerWidth / csvData.length - 1)
 //     // .on("mouseover", highlight)
 //     // .on("mouseout", dehighlight)
@@ -216,12 +245,12 @@ function setChart(csvData, colorScale){
 //   var desc = bars.append("desc")
 //     .text('{"stroke": "none", "stroke-width": "0px"}');
 
-//    //create a text element for the chart title
-//   var chartTitle = chart.append("text")
-//     .attr("x", 40)
-//     .attr("y", 40)
-//     .attr("class", "chartTitle");
-
+     //create a text element for the chart title
+  var chartTitle = chart.append("text")
+        .attr("x", 10)
+        .attr("y", 10)
+        .attr("class", "chartTitle");
+        //.text(chartTitles);
 //   //create vertical axis generator
 //   var yAxis = d3.svg.axis()
 //     .scale(yScale)
