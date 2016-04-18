@@ -118,8 +118,8 @@
       })
       .attr("d",path)
       .style("fill", function(d){
-        return colorScale(d.properties[expressed]);
-      });
+            return choropleth(d.properties, colorScale);
+        });
      
    //adds style descriptor to each path
     var desc= states.append("desc")
@@ -169,25 +169,25 @@
   };
 
 
-// //function to create coordinated bar chart
-// function setChart(csvData, colorScale){
-//   //chart frame dimensions
-//   var chartWidth = window.innerWidth * 0.425,
-//     chartHeight = 525;
+//function to create coordinated bar chart
+function setChart(csvData, colorScale){
+  //chart frame dimensions
+  var chartWidth = window.innerWidth * 0.425,
+    chartHeight = 525;
 
-//   //create a second svg element to hold the bar chart
-//   var chart = d3.select("body")
-//         .append("svg")
-//         .attr("width", chartWidth)
-//         .attr("height", chartHeight)
-//         .attr("class", "chart");
+  //create a second svg element to hold the bar chart
+  var chart = d3.select("body")
+        .append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .attr("class", "chart");
 
-//   //create a rectangle for chart background fill
-//   var chartBackground = chart.append("rect")
-//     .attr("class", "chartBackground")
-//     .attr("width", chartInnerWidth)
-//     .attr("height", chartInnerHeight)
-//     .attr("transform", translate);
+  // //create a rectangle for chart background fill
+  // var chartBackground = chart.append("rect")
+  //   .attr("class", "chartBackground")
+  //   .attr("width", chartInnerWidth)
+  //   .attr("height", chartInnerHeight)
+  //   .attr("transform", translate);
 
 //   //set bars for each province
 //   var bars = chart.selectAll(".bars")
