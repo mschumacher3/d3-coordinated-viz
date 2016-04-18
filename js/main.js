@@ -22,9 +22,9 @@
 
   //chart frame dimensions
   var chartWidth = window.innerWidth * 0.425,
-    chartHeight = 473,
+    chartHeight = 525,
     leftPadding = 25,
-    rightPadding = 2,
+    rightPadding = 5,
     topBottomPadding = 5,
     chartInnerWidth = chartWidth - leftPadding - rightPadding,
     chartInnerHeight = chartHeight - topBottomPadding * 2,
@@ -171,23 +171,12 @@
 //function to create coordinated bar chart
 function setChart(csvData, colorScale){
   console.log("got to set chart");
-  //chart frame dimensions
-  var chartWidth = window.innerWidth * 0.425,
-    chartHeight = 525;
-
   //create a second svg element to hold the bar chart
   var chart = d3.select("body")
         .append("svg")
         .attr("width", chartWidth)
         .attr("height", chartHeight)
         .attr("class", "chart");
-
-  // //create a rectangle for chart background fill
-  // var chartBackground = chart.append("rect")
-  //   .attr("class", "chartBackground")
-  //   .attr("width", chartInnerWidth)
-  //   .attr("height", chartInnerHeight)
-  //   .attr("transform", translate);
 
   //set bars for each province
   var bars = chart.selectAll(".bars")
@@ -202,13 +191,13 @@ function setChart(csvData, colorScale){
         })
         .attr("width", chartWidth / csvData.length - 1)
         .attr("x", function(d, i){
-            return i * (chartWidth / csvData.length);
+            return i * (chartInnerWidth / csvData.length) + leftPadding;
         })
         .attr("height", function(d){
-            return yScale(parseFloat(d[expressed]));
+            return 525 - yScale(parseFloat(d[expressed]));
         })
         .attr("y", function(d){
-            return chartHeight - yScale(parseFloat(d[expressed]));
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
         });
         // .style = ("fill", function(d){
         //   console.log("applying style to chart?");
@@ -247,27 +236,27 @@ function setChart(csvData, colorScale){
 
      //create a text element for the chart title
   var chartTitle = chart.append("text")
-        .attr("x", 10)
-        .attr("y", 10)
+        .attr("x", 40)
+        .attr("y", 40)
         .attr("class", "chartTitle");
         //.text(chartTitles);
-//   //create vertical axis generator
-//   var yAxis = d3.svg.axis()
-//     .scale(yScale)
-//     .orient("left");
+  //create vertical axis generator
+  var yAxis = d3.svg.axis()
+      .scale(yScale)
+      .orient("left");
 
-//   //place axis
-//   var axis = chart.append("g")
-//     .attr("class", "axis")
-//     .attr("transform", translate)
-//     .call(yAxis);
+  //place axis
+  var axis = chart.append("g")
+    .attr("class", "axis")
+    .attr("transform", translate)
+    .call(yAxis);
 
-//   //create frame for chart border
-//   var chartFrame = chart.append("rect")
-//     .attr("class", "chartFrame")
-//     .attr("width", chartInnerWidth)
-//     .attr("height", chartInnerHeight)
-//     .attr("transform", translate);
+  // //create frame for chart border
+  // var chartFrame = chart.append("rect")
+  //   .attr("class", "chartFrame")
+  //   .attr("width", chartInnerWidth)
+  //   .attr("height", chartInnerHeight)
+  //   .attr("transform", translate);
 
 // //   //set bar positions, heights, and colors
 //     updateChart(bars, csvData.length, colorScale);

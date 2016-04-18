@@ -33,7 +33,7 @@ h4{
     border: medium solid #e5e5e5;
     float: right;
     /*position: relative;*/
-    margin: 10px 20px 0 0;
+    margin: 7px 20px 0 0;
 }
 #content{
     text-align: center;
@@ -72,11 +72,11 @@ h4{
 
 .numbers {
     fill: white;
-    font-family: sans-serif;
+    font-family: "Lucida Fax";
 }
 
 .chartTitle {
-    font-family: sans-serif;
+    font-family: "Lucida Fax";
     font-size: 1.5em;
     font-weight: bold;
 }
@@ -98,7 +98,7 @@ h4{
 }
 
 .axis text {
-    font-family: sans-serif;
+    font-family: "Lucida Fax";
     font-size: 0.8em;
     fill: #999;
 }
