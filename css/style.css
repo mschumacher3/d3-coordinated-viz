@@ -32,8 +32,8 @@ h4{
     background-color: #fff;
     border: medium solid #e5e5e5;
     float: right;
-    /*position: relative;*/
     margin: 7px 20px 0 0;
+
 }
 #content{
     text-align: center;
@@ -57,7 +57,6 @@ h4{
     background-color: #e5e5e5;
 }
 .states {
-	fill: #fff;
 	stroke: #fff;
 	stroke-width: 1.5px;
 }
@@ -66,7 +65,7 @@ h4{
 	border: medium solid #e5e5e5;
 	padding: 20px;
     background-color: #e5e5e5
-    margin: 10px 0 0 20px;    
+    margin: 7px 20px 0 0;   
 
 }
 
@@ -81,14 +80,6 @@ h4{
     font-weight: bold;
 }
 
-
-/*.chartFrame {
-    fill: none;
-    stroke: medium solid #252525;
-    stroke-width: 3px;
-    shape-rendering: crispEdges;
-}*/
-
 .axis path,
 .axis line {
     fill: none;
@@ -100,5 +91,23 @@ h4{
 .axis text {
     font-family: "Lucida Fax";
     font-size: 0.8em;
+    color: black;
     fill: #999;
+}
+
+.dropdown {
+    position: absolute;
+    top: 640px;
+    left: 40px;
+    z-index: 100;
+    font-family: "Lucida Fax";
+    font-size: 1em;
+    font-weight: bold;
+    padding: 2px;
+    border: 1px solid #999;
+    box-shadow: 1px 1px 2px #e5e5e5;
+}
+
+option {
+    font-weight: normal;
 }

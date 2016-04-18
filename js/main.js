@@ -4,15 +4,12 @@
 
   //pseudo-global variables
   //took out one attribute that i thought was causing issues-- Norm_Num_firms.  
-  var attrArray = ["Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms"];
+  var attrArray = ["Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms","Norm_Num_Firms"];
   var expressed = attrArray[0]; //initial attribute
-  //create a scale to size bars proportionally to frame and for axis
-  var yScale = d3.scale.linear()
-    .range([800, 0])
-    .domain([0, 100]);
+ 
 
   //assigns chart titles to each variable
-  var chartTitles={
+  var chartTitle={
       Norm_Num_firms:['Total Firms'],
       Norm_M_firms:['of Firms Owned by Men'],
       Norm_F_firms:['Firms Owned by Women'],
@@ -79,7 +76,7 @@
         //adds enumeration units to the map
         setEnumerationUnits(usStates, map, path, colorScale);
         setChart(csvData, colorScale);
-        //createDropdown(csvData);   
+        createDropdown(csvData);   
       };
   };//end of setMap
 
@@ -107,7 +104,7 @@
   };
 
   function setEnumerationUnits(usStates, map, path, colorScale){ 
-    console.log("reaching?");
+    console.log("reaching setEnumerationUnits?");
     var states = map.selectAll(".states")
       .data(usStates)
       .enter()
@@ -178,6 +175,11 @@ function setChart(csvData, colorScale){
         .attr("height", chartHeight)
         .attr("class", "chart");
 
+   //create a scale to size bars proportionally to frame and for axis
+  var yScale = d3.scale.linear()
+    .range([800, 0])
+    .domain([0, 100]);
+
   //set bars for each province
   var bars = chart.selectAll(".bars")
         .data(csvData)
@@ -225,14 +227,6 @@ function setChart(csvData, colorScale){
         .text(function(d){
             return d[expressed];
         });
-//     // .attr("width", chartInnerWidth / csvData.length - 1)
-//     // .on("mouseover", highlight)
-//     // .on("mouseout", dehighlight)
-//     // .on("mousemove", moveLabel);
-
-//   //add style descriptor to each rect
-//   var desc = bars.append("desc")
-//     .text('{"stroke": "none", "stroke-width": "0px"}');
 
      //create a text element for the chart title
   var chartTitle = chart.append("text")
@@ -251,40 +245,32 @@ function setChart(csvData, colorScale){
     .attr("transform", translate)
     .call(yAxis);
 
-  // //create frame for chart border
-  // var chartFrame = chart.append("rect")
-  //   .attr("class", "chartFrame")
-  //   .attr("width", chartInnerWidth)
-  //   .attr("height", chartInnerHeight)
-  //   .attr("transform", translate);
+};
+//function to create a dropdown menu for attribute selection
+function createDropdown(csvData){
+  console.log("reaching createDropdown?");
+  //adds elements
+  var dropdown = d3.select("body")
+    .append("select")
+    .attr("class", "dropdown")
+    // .on("change", function(){
+    //   changeAttribute(this.value, csvData)
+    // });
 
-// //   //set bar positions, heights, and colors
-//     updateChart(bars, csvData.length, colorScale);
-// };
-// //function to create a dropdown menu for attribute selection
-// function createDropdown(csvData){
-//   //adds elements
-//   var dropdown = d3.select("body")
-//     .append("select")
-//     .attr("class", "dropdown")
-//     .on("change", function(){
-//       changeAttribute(this.value, csvData)
-//     });
+  //adds starting option, first variable. Total Firms compared to occumaption 
+  var titleOption = dropdown.append("option")
+    .attr("class", "titleOption")
+    .attr("disabled", "true")
+    .text("Select Attribute");
 
-//   //adds starting option, first variable. Total Firms compared to occumaption 
-//   var titleOption = dropdown.append("option")
-//     .attr("class", "titleOption")
-//     .attr("disabled", "true")
-//     .text("Select Attribute");
-
-//   //add attribute name options
-//   var attrOptions = dropdown.selectAll("attrOptions")
-//     .data(attrArray)
-//     .enter()
-//     .append("option")
-//     .attr("value", function(d){ return d })
-//     .text(function(d){ return d });
-// };
+  //add attribute name options
+  var attrOptions = dropdown.selectAll("attrOptions")
+    .data(attrArray)
+    .enter()
+    .append("option")
+    .attr("value", function(d){ return d })
+    .text(function(d){ return d });
+};
 
 // //dropdown can change listener handler
 // function changeAttribute(attribute, csvData){
@@ -423,7 +409,7 @@ function setChart(csvData, colorScale){
 //       "left": x + "px",
 //       "top": y + "px"
 //     });
- };
+
 
   
 })();
