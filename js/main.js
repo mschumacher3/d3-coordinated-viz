@@ -253,10 +253,9 @@ function createDropdown(csvData){
   var dropdown = d3.select("body")
     .append("select")
     .attr("class", "dropdown")
-    // .on("change", function(){
-    //   changeAttribute(this.value, csvData)
-    // });
-
+    .on("change", function(){
+      changeAttribute(this.value, csvData)
+    });
   //adds starting option, first variable. Total Firms compared to occumaption 
   var titleOption = dropdown.append("option")
     .attr("class", "titleOption")
@@ -272,21 +271,21 @@ function createDropdown(csvData){
     .text(function(d){ return d });
 };
 
-// //dropdown can change listener handler
-// function changeAttribute(attribute, csvData){
-//   //changes the expressed attribute
-//   expressed = attribute;
+  //dropdown can change listener handler
+function changeAttribute(attribute, csvData){
+  //changes the expressed attribute
+  expressed = attribute;
 
-//   //recreates the color scale
-//   var colorScale = makeColorScale(csvData);
+  //recreates the color scale
+  var colorScale = makeColorScale(csvData);
 
-//   //recolors enumeration units.. trying to have it connect to my different colorscales above as golobal variables
-//   var regions = d3.selectAll(".regions")
-//     .transition()
-//     .duration(1000)
-//     .style("fill", function(d){
-//       return choropleth(d.properties, colorScale)
-//     });
+  //recolors enumeration units.. trying to have it connect to my different colorscales above as golobal variables
+  var states = d3.selectAll(".states")
+   // .transition()
+    //.duration(1000)
+    .style("fill", function(d){
+      return choropleth(d.properties, colorScale)
+    });
 
 //   //re-sort, resize, and recolor bars
 //   var bars = d3.selectAll(".bar")
@@ -301,7 +300,7 @@ function createDropdown(csvData){
 //     .duration(500);
 
 //   updateChart(bars, csvData.length, colorScale);
-// };
+};
 
 // //changes to position, size, and color bars in chart
 // function updateChart(bars, n, colorScale){
