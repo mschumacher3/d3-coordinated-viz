@@ -133,7 +133,7 @@
      
    //adds style descriptor to each path
     var desc= states.append("desc")
-    .text('{"stroke": "#000", "stroke-width": "0.5px"}');
+    .text('{"stroke": "white", "stroke-width": "0.5px"}');
   };
 
 
@@ -207,7 +207,7 @@ function setChart(csvData, colorScale){
         .on("mouseout", dehighlight);
  
   var desc = bars.append("desc")
-        .text('{"stroke": "none", "stroke-width": "0px"}');
+        .text('{"stroke": "white", "stroke-width": "0px"}');
      //create a text element for the chart title
   var chartTitle = chart.append("text")
         .attr("x", 40)
@@ -316,7 +316,9 @@ function highlight(props){
   var selected = d3.selectAll("." + props.adm1_code)
     .style({
       "stroke": "black",
-      "stroke-width": "2"
+      "stroke-width": "2",
+      //"z-index":"200"
+
     });
 
   setLabel(props);
@@ -343,54 +345,56 @@ function dehighlight(props){
 
         return styleObject[styleName];
     };
+    d3.select(".infolabel")
+        .remove();
 };
 
-// //function to create dynamic label
-// function setLabel(props){
-//   //label content
-//   var labelAttribute = "<h1>" + props[expressed] +
-//     "</h1><b>" + expressed + "</b>";
+//function to create dynamic label
+function setLabel(props){
+  console.log("reaching setlabel?");
+  //label content
+  var labelAttribute = "<h1>" + chartTitle[expressed] +
+    "</h1><b>" + expressed + "</b>";
 
-//   //create info label div
-//   var infolabel = d3.select("body")
-//     .append("div")
-//     .attr({
-//       "class": "infolabel",
-//       "id": props.adm1_code + "_label"
-//     })
-//     .html(labelAttribute);
+  //create info label div
+  var infolabel = d3.select("body")
+    .append("div")
+    .attr({
+      "class": "infolabel",
+      "id": props.adm1_code + "_label"
+    })
+    .html(labelAttribute);
 
-//   var regionName = infolabel.append("div")
-//     .attr("class", "labelname")
-//     .html(props.name);
-// };
+  var stateName = infolabel.append("div")
+    .attr("class", "labelname")
+    .html(props.name);
+};
+
+//function to move info label with mouse
+function moveLabel(){
+  console.log("reaching move label");
+    var labelWidth = d3.select(".infolabel")
+        .node()
+        .getBoundingClientRect()
+        .width;
+
+    //use coordinates of mousemove event to set label coordinates
+    var x1 = d3.event.clientX + 10,
+        y1 = d3.event.clientY - 75,
+        x2 = d3.event.clientX - labelWidth - 10,
+        y2 = d3.event.clientY + 25;
 
 
-
-// //function to move info label with mouse
-// function moveLabel(){
-//   //get width of label
-//   var labelWidth = d3.select(".infolabel")
-//     .node()
-//     .getBoundingClientRect()
-//     .width;
-
-//   //use coordinates of mousemove event to set label coordinates
-//   var x1 = d3.event.clientX + 10,
-//     y1 = d3.event.clientY - 75,
-//     x2 = d3.event.clientX - labelWidth - 10,
-//     y2 = d3.event.clientY + 25;
-
-//   //horizontal label coordinate, testing for overflow
-//   var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1;
-//   //vertical label coordinate, testing for overflow
-//   var y = d3.event.clientY < 75 ? y2 : y1;
-
-//   d3.select(".infolabel")
-//     .style({
-//       "left": x + "px",
-//       "top": y + "px"
-//     });
+    //horizontal label coordinate, testing for overflow
+    var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1; 
+    //vertical label coordinate, testing for overflow
+    var y = d3.event.clientY < 75 ? y2 : y1; 
+    d3.select(".infolabel")
+        .style({
+            "left": x + "px",
+            "top": y + "px"
+        });
+};
 
 
 })();

@@ -111,3 +111,21 @@ h4{
 option {
     font-weight: normal;
 }
+
+.infolabel {
+    position: absolute;
+    height: 50px;
+    min-width: 100px;
+    color: black;
+    background-color: #000;
+    border: solid thin #e5e5e5;
+    padding: 5px 10px;
+    top: -75px;
+}
+
+.infolabel h1 {
+    margin: 0 20px 0 0;
+    padding: 0;
+    display: inline-block;
+    line-height: 1em;
+}
