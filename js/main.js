@@ -161,7 +161,6 @@
       return colorScale;
   };
 
-  //I do not have any no data regions, but kept this here incase something is not read in correctly
   function choropleth(props, colorScale){
     //make sure attribute value is a number
     var val = parseFloat(props[expressed]);
@@ -198,15 +197,15 @@ function setChart(csvData, colorScale){
             return "bars " + d.adm1_code;
         })
         .attr("width", chartWidth / csvData.length - 1)
-        .attr("x", function(d, i){
-            return i * (chartInnerWidth / csvData.length) + leftPadding;
-        })
-        .attr("height", function(d){
-            return 525 - yScale(parseFloat(d[expressed]));
-        })
-        .attr("y", function(d){
-            return yScale(parseFloat(d[expressed])) + topBottomPadding;
-        });
+        // .attr("x", function(d, i){
+        //     return i * (chartInnerWidth / csvData.length) + leftPadding;
+        // })
+        // .attr("height", function(d){
+        //     return 525 - yScale(parseFloat(d[expressed]));
+        // })
+        // .attr("y", function(d){
+        //     return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        // });
 
      //create a text element for the chart title
   var chartTitle = chart.append("text")
@@ -264,8 +263,8 @@ function changeAttribute(attribute, csvData){
 
   //recolors enumeration units.. trying to have it connect to my different colorscales above as golobal variables
   var states = d3.selectAll(".states")
-   // .transition()
-    //.duration(1000)
+    .transition()
+    .duration(1000)
     .style("fill", function(d){
       return choropleth(d.properties, colorScale)
     });
@@ -276,20 +275,11 @@ function changeAttribute(attribute, csvData){
     .sort(function(a, b){
       return b[expressed] - a[expressed];
     })
-    // .attr("x", function(d, i){
-    //   return i * (chartInnerWidth / csvData.length) + leftPadding;
-    // })
-    // //resize bars
-    // .attr("height", function(d, i){
-    //   return 463 - yScale(parseFloat(d[expressed]));
-    // })
-    // .attr("y", function(d, i){
-    //   return yScale(parseFloat(d[expressed])) + topBottomPadding;
-    // })
-    // .style("fill", function(d){
-    //   return choropleth(d, colorScale);
-    // });
-
+    .transition()
+    .delay(function(d, i){
+      return i * 20
+    })
+    .duration(500);
     updateChart(bars, csvData.length, colorScale);
 };
 
