@@ -122,8 +122,14 @@
       })
       .attr("d",path)
       .style("fill", function(d){
-            return choropleth(d.properties, colorScale);
-        });
+        return choropleth(d.properties, colorScale);
+      })
+      .on("mouseover", function(d){
+        highlight(d.properties);
+      })
+      .on("mouseout", function(d){
+        dehighlight(d.properties);
+      });
      
    //adds style descriptor to each path
     var desc= states.append("desc")
@@ -197,16 +203,11 @@ function setChart(csvData, colorScale){
             return "bars " + d.adm1_code;
         })
         .attr("width", chartWidth / csvData.length - 1)
-        // .attr("x", function(d, i){
-        //     return i * (chartInnerWidth / csvData.length) + leftPadding;
-        // })
-        // .attr("height", function(d){
-        //     return 525 - yScale(parseFloat(d[expressed]));
-        // })
-        // .attr("y", function(d){
-        //     return yScale(parseFloat(d[expressed])) + topBottomPadding;
-        // });
-
+        .on("mouseover", highlight)
+        .on("mouseout", dehighlight);
+ 
+  var desc = bars.append("desc")
+        .text('{"stroke": "none", "stroke-width": "0px"}');
      //create a text element for the chart title
   var chartTitle = chart.append("text")
         .attr("x", 40)
@@ -309,17 +310,40 @@ function updateChart(bars, n, colorScale){
 
 
 
-// // function to highlight enumeration units and bars
-// function highlight(props){
-//   //change stroke
-//   var selected = d3.selectAll("." + props.adm1_code)
-//     .style({
-//       "stroke": "blue",
-//       "stroke-width": "2"
-//     });
+// function to highlight enumeration units and bars
+function highlight(props){
+  //change stroke
+  var selected = d3.selectAll("." + props.adm1_code)
+    .style({
+      "stroke": "black",
+      "stroke-width": "2"
+    });
 
-//   setLabel(props);
-// };
+  setLabel(props);
+};
+
+//function to reset the element style on mouseout
+function dehighlight(props){
+    var selected = d3.selectAll("." + props.adm1_code)
+        .style({
+            "stroke": function(){
+                return getStyle(this, "stroke")
+            },
+            "stroke-width": function(){
+                return getStyle(this, "stroke-width")
+            }
+        });
+
+    function getStyle(element, styleName){
+        var styleText = d3.select(element)
+            .select("desc")
+            .text();
+
+        var styleObject = JSON.parse(styleText);
+
+        return styleObject[styleName];
+    };
+};
 
 // //function to create dynamic label
 // function setLabel(props){
@@ -341,32 +365,7 @@ function updateChart(bars, n, colorScale){
 //     .html(props.name);
 // };
 
-// //function to reset the element style on mouseout
-// function dehighlight(props){
-//   var selected = d3.selectAll("." + props.adm1_code)
-//     .style({
-//       "stroke": function(){
-//         return getStyle(this, "stroke")
-//       },
-//       "stroke-width": function(){
-//         return getStyle(this, "stroke-width")
-//       }
-//     });
 
-//   function getStyle(element, styleName){
-//     var styleText = d3.select(element)
-//       .select("desc")
-//       .text();
-
-//     var styleObject = JSON.parse(styleText);
-
-//     return styleObject[styleName];
-//   };
-
-//   //remove info label
-//   d3.select(".infolabel")
-//     .remove();
-// };
 
 // //function to move info label with mouse
 // function moveLabel(){
