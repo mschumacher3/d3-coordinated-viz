@@ -1,4 +1,4 @@
-adm1_code,name,Norm_M_firms,Norm_F_firms,Norm_MI_firms,Norm_NonMI_firms,Norm_Num_Firms
+adm1_code,name,Male Owned Firms,Female Owned Firms,Minority Owned Firms,Non Minority Owned Firms,Total Firms
 USA-3541,Alabama,54.42,36.79,24.65,72.87,7.8
 USA-3563,Alaska,52.04,32.54,20.12,75.18,9.3
 USA-3520,Arizona,49.06,36.49,27.07,69.01,7.6

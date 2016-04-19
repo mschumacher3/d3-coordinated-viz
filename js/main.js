@@ -6,7 +6,7 @@
 
   //pseudo-global variables
   //took out one attribute that i thought was causing issues-- Norm_Num_firms.  
-  var attrArray = ["Norm_M_firms", "Norm_F_firms", "Norm_MI_firms", "Norm_NonMI_firms","Norm_Num_Firms"];
+  var attrArray = ["Male Owned Firms", "Female Owned Firms", "Minority Owned Firms", "Non Minority Owned Firms","Total Firms"];
   var expressed = attrArray[0]; //initial attribute
  
 
@@ -80,7 +80,7 @@
         //joins csv data to GeoJSON enumeration units
         usStates = joinData(usStates, csvData);
         var colorScale = makeColorScale(csvData);
-        createMyDropdown(csvData);   
+        createDropdown(csvData);   
         //adds enumeration units to the map
         setEnumerationUnits(usStates, map, path, colorScale);
         setChart(csvData, colorScale);
@@ -129,7 +129,8 @@
       })
       .on("mouseout", function(d){
         dehighlight(d.properties);
-      });
+      })
+      .on("mousemove", moveLabel);
      
    //adds style descriptor to each path
     var desc= states.append("desc")
@@ -145,9 +146,8 @@
       "#fcae91",
       "#fb6a4a",
       "#de2d26",
-      //"#a50f15"
+      "#a50f15"
     ];
-    console.log(colorClasses);
     //creates color scale generator
     //quantile because data is not continuous
     var colorScale = d3.scale.quantile()
@@ -163,7 +163,6 @@
       domainArray.shift();
       //assign array of expressed values as scale domain
       colorScale.domain(domainArray);
-      console.log(colorScale.quantiles())
       return colorScale;
   };
 
@@ -177,6 +176,29 @@
         return colorScale(val);
     };
   };
+
+//changes to position, size, and color bars in chart
+function updateChart(bars, n, colorScale){
+    console.log("why aren't u updating?");
+  //position bars
+  bars.attr("x", function(d, i){
+      return i * (chartInnerWidth / n) + leftPadding;
+    })
+    //size/resize bars
+    .attr("height", function(d, i){
+      return 525 - yScale(parseFloat(d[expressed]));
+    })
+    .attr("y", function(d, i){
+      return yScale(parseFloat(d[expressed])) + topBottomPadding;
+    })
+    //color/recolor bars
+    .style("fill", function(d){
+      return choropleth(d, colorScale);
+    });
+
+    var chartTitle = d3.select(".chartTitle")
+      .text(expressed+ " in each state");
+};
 
 
 //function to create coordinated bar chart
@@ -230,8 +252,7 @@ function setChart(csvData, colorScale){
 
 };
 //function to create a dropdown menu for attribute selection
-function createMyDropdown(csvData){
-  console.log("reaching createDropdown?");
+function createDropdown(csvData){
   //adds elements
   var dropdown = d3.select("body")
     .append("select")
@@ -256,13 +277,14 @@ function createMyDropdown(csvData){
 
   //dropdown can change listener handler
 function changeAttribute(attribute, csvData){
+  console.log(" are u updating?");
   //changes the expressed attribute
   expressed = attribute;
 
   //recreates the color scale
   var colorScale = makeColorScale(csvData);
 
-  //recolors enumeration units.. trying to have it connect to my different colorscales above as golobal variables
+  //recolors enumeration units.
   var states = d3.selectAll(".states")
     .transition()
     .duration(800)
@@ -285,28 +307,7 @@ function changeAttribute(attribute, csvData){
     updateChart(bars, csvData.length, colorScale);
 };
 
-//changes to position, size, and color bars in chart
-function updateChart(bars, n, colorScale){
-    console.log("why aren't u updating?");
-  //position bars
-  bars.attr("x", function(d, i){
-      return i * (chartInnerWidth / n) + leftPadding;
-    })
-    //size/resize bars
-    .attr("height", function(d, i){
-      return 525 - yScale(parseFloat(d[expressed]));
-    })
-    .attr("y", function(d, i){
-      return yScale(parseFloat(d[expressed])) + topBottomPadding;
-    })
-    //color/recolor bars
-    .style("fill", function(d){
-      return choropleth(d, colorScale);
-    });
 
-    var chartTitle = d3.select(".chartTitle")
-      .text("Number of Variable " + expressed[3] + " in each state");
-};
 
 
 
@@ -316,9 +317,7 @@ function highlight(props){
   var selected = d3.selectAll("." + props.adm1_code)
     .style({
       "stroke": "black",
-      "stroke-width": "2",
-      //"z-index":"200"
-
+      "stroke-width": "2"
     });
 
   setLabel(props);
@@ -353,7 +352,7 @@ function dehighlight(props){
 function setLabel(props){
   console.log("reaching setlabel?");
   //label content
-  var labelAttribute = "<h1>" + chartTitle[expressed] +
+  var labelAttribute = "<h1>" + props[expressed] +
     "</h1><b>" + expressed + "</b>";
 
   //create info label div
