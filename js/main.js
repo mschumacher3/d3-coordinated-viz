@@ -264,7 +264,7 @@ function changeAttribute(attribute, csvData){
   //recolors enumeration units.. trying to have it connect to my different colorscales above as golobal variables
   var states = d3.selectAll(".states")
     .transition()
-    .duration(1000)
+    .duration(800)
     .style("fill", function(d){
       return choropleth(d.properties, colorScale)
     });
@@ -280,11 +280,13 @@ function changeAttribute(attribute, csvData){
       return i * 20
     })
     .duration(500);
+  
     updateChart(bars, csvData.length, colorScale);
 };
 
 //changes to position, size, and color bars in chart
 function updateChart(bars, n, colorScale){
+    console.log("why aren't u updating?");
   //position bars
   bars.attr("x", function(d, i){
       return i * (chartInnerWidth / n) + leftPadding;
@@ -307,7 +309,7 @@ function updateChart(bars, n, colorScale){
 
 
 
-// //function to highlight enumeration units and bars
+// // function to highlight enumeration units and bars
 // function highlight(props){
 //   //change stroke
 //   var selected = d3.selectAll("." + props.adm1_code)
