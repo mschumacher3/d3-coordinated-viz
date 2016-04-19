@@ -226,8 +226,9 @@ function setChart(csvData, colorScale){
         })
         .attr("width", chartWidth / csvData.length - 1)
         .on("mouseover", highlight)
-        .on("mouseout", dehighlight);
- 
+        .on("mouseout", dehighlight)
+        .on("mousemove", moveLabel);
+
   var desc = bars.append("desc")
         .text('{"stroke": "white", "stroke-width": "0px"}');
      //create a text element for the chart title
