@@ -80,10 +80,12 @@
         //joins csv data to GeoJSON enumeration units
         usStates = joinData(usStates, csvData);
         var colorScale = makeColorScale(csvData);
+        setChart(csvData, colorScale);
         createDropdown(csvData);   
+
         //adds enumeration units to the map
         setEnumerationUnits(usStates, map, path, colorScale);
-        setChart(csvData, colorScale);
+        
         
       };
   };//end of setMap
@@ -354,41 +356,41 @@ function setLabel(props){
   console.log("reaching setlabel?");
   //label content
   var labelAttribute = "<h1>" + props[expressed] +
-    "</h1><b>" + expressed + "</b>";
+        "</h1><b>" + expressed + "</b>";
 
-  //create info label div
-  var infolabel = d3.select("body")
-    .append("div")
-    .attr({
-      "class": "infolabel",
-      "id": props.adm1_code + "_label"
-    })
+    //create info label div
+    var infolabel = d3.select("body")
+        .append("div")
+        .attr({
+            "class": "infolabel",
+            "id": props.adm1_code + "_label"
+        })
     .html(labelAttribute);
 
-  var stateName = infolabel.append("div")
-    .attr("class", "labelname")
-    .html(props.name);
+  var regionName = infolabel.append("div")
+        .attr("class", "labelname")
+        .html(props.name);
 };
 
 //function to move info label with mouse
 function moveLabel(){
-  console.log("reaching move label");
+    //get width of label
     var labelWidth = d3.select(".infolabel")
         .node()
         .getBoundingClientRect()
         .width;
 
     //use coordinates of mousemove event to set label coordinates
-    var x1 = d3.event.clientX + 10,
-        y1 = d3.event.clientY - 75,
-        x2 = d3.event.clientX - labelWidth - 10,
+    var x1 = d3.event.clientX,
+        y1 = d3.event.clientY - 1,
+        x2 = d3.event.clientX - labelWidth,
         y2 = d3.event.clientY + 25;
-
 
     //horizontal label coordinate, testing for overflow
     var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1; 
     //vertical label coordinate, testing for overflow
     var y = d3.event.clientY < 75 ? y2 : y1; 
+
     d3.select(".infolabel")
         .style({
             "left": x + "px",
