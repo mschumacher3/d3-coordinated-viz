@@ -114,7 +114,6 @@
 
 
   function setEnumerationUnits(usStates, map, path, colorScale){ 
-    console.log("reaching setEnumerationUnits?");
     var states = map.selectAll(".states")
       .data(usStates)
       .enter()
@@ -181,7 +180,6 @@
 
 //changes to position, size, and color bars in chart
 function updateChart(bars, n, colorScale){
-    console.log("why aren't u updating?");
   //position bars
   bars.attr("x", function(d, i){
       return i * (chartInnerWidth / n) + leftPadding;
@@ -226,6 +224,7 @@ function setChart(csvData, colorScale){
         .attr("class", function(d){
             return "bars " + d.adm1_code;
         })
+
         .attr("width", chartWidth / csvData.length - 1)
         .on("mouseover", highlight)
         .on("mouseout", dehighlight)
@@ -280,7 +279,6 @@ function createDropdown(csvData){
 
   //dropdown can change listener handler
 function changeAttribute(attribute, csvData){
-  console.log(" are u updating?");
   //changes the expressed attribute
   expressed = attribute;
 
@@ -295,22 +293,20 @@ function changeAttribute(attribute, csvData){
       return choropleth(d.properties, colorScale)
     });
 
-  //re-sort, resize, and recolor bars
-  var bars = d3.selectAll(".bar")
-    //re-sort bars
-    .sort(function(a, b){
-      return b[expressed] - a[expressed];
-    })
-    .transition()
-    .delay(function(d, i){
-      return i * 20
-    })
-    .duration(500);
+      //re-sort, resize, and recolor bars
+      var bars = d3.selectAll(".bar")
+        //re-sort bars
+        .sort(function(a, b){
+          return b[expressed] - a[expressed];
+        })
+        .transition()
+        .delay(function(d, i){
+          return i * 20
+        })
+        .duration(500);
   
     updateChart(bars, csvData.length, colorScale);
 };
-
-
 
 
 
@@ -353,7 +349,6 @@ function dehighlight(props){
 
 //function to create dynamic label
 function setLabel(props){
-  console.log("reaching setlabel?");
   //label content
   var labelAttribute = "<h1>" + props[expressed] +
         "</h1><b>" + expressed + "</b>";
@@ -382,9 +377,9 @@ function moveLabel(){
 
     //use coordinates of mousemove event to set label coordinates
     var x1 = d3.event.clientX,
-        y1 = d3.event.clientY - 1,
+        y1 = d3.event.clientY+300,
         x2 = d3.event.clientX - labelWidth,
-        y2 = d3.event.clientY + 25;
+        y2 = d3.event.clientY-100;
 
     //horizontal label coordinate, testing for overflow
     var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1; 
